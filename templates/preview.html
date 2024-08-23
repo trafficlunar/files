@@ -1,0 +1,115 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ file }} — {{ page_title }}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            display: grid;
+            grid-template-rows: 5rem auto;
+
+            height: 100%;
+
+            margin: 0;
+            overflow-x: hidden;
+            background-color: #181825;
+
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 0.5rem 1rem;
+            border-bottom: 2px solid #ff87ab;
+
+            background-color: #1e1e2e;
+        }
+
+        #info {
+            display: flex;
+            flex-direction: column;
+
+            color: rgba(245, 194, 231, 0.5);
+            font-size: 0.875rem;
+        }
+
+        #file-name {
+            font-size: 2rem;
+            color: #f5c2e7;
+        }
+
+        #links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+
+            margin-right: 1rem;
+        }
+
+        #links a {
+            text-decoration: none;
+            color: #f5c2e7;
+
+            height: 100%;
+            font-size: 1.125rem;
+
+            transition: 200ms;
+            transition-property: filter transform;
+        }
+
+        #links a:hover {
+            filter: brightness(75%);
+        }
+
+        #links a:active {
+            transform: scale(0.8);
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        img {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div id="info">
+            <span id="file-name">{{ file }}</span>
+            <span id="date-created">Created: 8th August 2024 at 10:55 pm</span>
+        </div>
+        
+        <div id="links">
+            <a href="/{{ file }}/raw">Raw</a>
+            <a href="/{{ file }}/raw" download="{{ file }}">Download</a>
+        </div>
+    </header>
+
+    <main>
+        <img src="/{{ file }}/raw" alt="image">
+    </main>
+
+    <script>
+        const url = "/{{ file }}/raw";
+        const xhr = new XMLHttpRequest();
+        xhr.open("head", url, true);
+        xhr.addEventListener("load", () => {
+            const contentType = xhr.getResponseHeader("Content-Type");
+            console.log(contentType);
+        });
+        xhr.send();
+    </script>
+</body>
+</html>
