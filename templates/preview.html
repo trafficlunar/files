@@ -80,7 +80,7 @@
         }
 
         img {
-            width: 100%;
+            max-width: 100%;
         }
     </style>
 </head>
@@ -88,7 +88,7 @@
     <header>
         <div id="info">
             <span id="file-name">{{ file }}</span>
-            <span id="date-created">Created: 8th August 2024 at 10:55 pm</span>
+            <span id="file-modified">Modified: {{ file_modified }}</span>
         </div>
         
         <div id="links">
@@ -101,15 +101,6 @@
         <img src="/{{ file }}/raw" alt="image">
     </main>
 
-    <script>
-        const url = "/{{ file }}/raw";
-        const xhr = new XMLHttpRequest();
-        xhr.open("head", url, true);
-        xhr.addEventListener("load", () => {
-            const contentType = xhr.getResponseHeader("Content-Type");
-            console.log(contentType);
-        });
-        xhr.send();
-    </script>
+    <!-- todo: get mime type and change tag based on that -->
 </body>
 </html>

@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 askama = "0.12.1"
 axum = "0.7.5"
+chrono = "0.4.38"
 dotenv = "0.15.0"
 minijinja = "2.1.2"
 rand = "0.8.5"

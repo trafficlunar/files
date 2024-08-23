@@ -13,7 +13,7 @@ pub async fn app() -> Router {
     Router::new()
         .route("/", get(root))
         .route_service("/favicon.ico", ServeFile::new("favicon.ico"))
-        .route("/:filename/", get(preview::route))
+        .route("/:filename", get(preview::route))
         .route("/:filename/raw", get(raw::route))
         .layer(
             TraceLayer::new_for_http()
