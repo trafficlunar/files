@@ -315,7 +315,6 @@ dependencies = [
  "chrono",
  "dotenv",
  "mime_guess",
- "minijinja",
  "rand",
  "serde_json",
  "tokio",
@@ -626,15 +625,6 @@ checksum = "f7c44f8e672c00fe5308fa235f821cb4198414e1c77935c1ab6948d3fd78550e"
 dependencies = [
  "mime",
  "unicase",
-]
-
-[[package]]
-name = "minijinja"
-version = "2.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf369fce3289017a63e514dfca10a0a6f1a02216b21b588b79f6a1081eb999f5"
-dependencies = [
- "serde",
 ]
 
 [[package]]

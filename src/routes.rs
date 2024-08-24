@@ -6,6 +6,7 @@ use tower_http::{
 };
 use tracing::Level;
 
+mod upload;
 mod preview;
 mod raw;
 
@@ -13,6 +14,7 @@ pub async fn app() -> Router {
     Router::new()
         .route("/", get(root))
         .route_service("/favicon.ico", ServeFile::new("favicon.ico"))
+        .route("/upload", get(upload::route))
         .route("/:filename", get(preview::route))
         .route("/:filename/raw", get(raw::route))
         .layer(
