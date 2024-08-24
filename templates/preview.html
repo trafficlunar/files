@@ -1,106 +1,231 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ file }} — {{ page_title }}</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ file }} — {{ page_title }}</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+            rel="stylesheet"
+        />
 
-    <style>
-        body {
-            display: grid;
-            grid-template-rows: 5rem auto;
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/default.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="//unpkg.com/@catppuccin/highlightjs@0.2.2/css/catppuccin-frappe.css"
+        />
 
-            height: 100%;
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"
+            async
+        ></script>
 
-            margin: 0;
-            overflow-x: hidden;
-            background-color: #181825;
+        <style>
+            body {
+                display: grid;
+                grid-template-rows: 5rem auto;
 
-            font-family: "JetBrains Mono", monospace;
-        }
+                height: 100%;
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+                margin: 0;
+                overflow-x: hidden;
 
-            padding: 0.5rem 1rem;
-            border-bottom: 2px solid #ff87ab;
+                background-color: #181825;
+                color: #ffa6c1;
 
-            background-color: #1e1e2e;
-        }
+                font-family: "JetBrains Mono", monospace;
+            }
 
-        #info {
-            display: flex;
-            flex-direction: column;
+            header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
 
-            color: rgba(245, 194, 231, 0.5);
-            font-size: 0.875rem;
-        }
+                padding: 0.5rem 1rem;
+                border-bottom: 2px solid #ff87ab;
 
-        #file-name {
-            font-size: 2rem;
-            color: #f5c2e7;
-        }
+                background-color: #1e1e2e;
+            }
 
-        #links {
-            display: flex;
-            align-items: center;
-            gap: 24px;
+            #left {
+                display: flex;
+                flex-direction: column;
 
-            margin-right: 1rem;
-        }
+                font-size: 0.875rem;
+            }
 
-        #links a {
-            text-decoration: none;
-            color: #f5c2e7;
+            #file-name {
+                font-size: 2rem;
+                font-weight: 700;
+            }
 
-            height: 100%;
-            font-size: 1.125rem;
+            #file-modified {
+                color: #ffa6c180;
+            }
 
-            transition: 200ms;
-            transition-property: filter transform;
-        }
+            #right {
+                display: flex;
+                align-items: center;
+                gap: 24px;
+                height: 100%;
+            }
 
-        #links a:hover {
-            filter: brightness(75%);
-        }
+            #file-size {
+                font-weight: 600;
+            }
 
-        #links a:active {
-            transform: scale(0.8);
-        }
+            #seperator {
+                display: block;
+                background-color: #ffa6c1;
+                width: 2px;
+                height: 75%;
+            }
 
-        main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+            #links {
+                display: flex;
+                align-items: center;
+                gap: 24px;
 
-        img {
-            max-width: 100%;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div id="info">
-            <span id="file-name">{{ file }}</span>
-            <span id="file-modified">Modified: {{ file_modified }}</span>
-        </div>
-        
-        <div id="links">
-            <a href="/{{ file }}/raw">Raw</a>
-            <a href="/{{ file }}/raw" download="{{ file }}">Download</a>
-        </div>
-    </header>
+                margin-right: 1rem;
+            }
 
-    <main>
-        <img src="/{{ file }}/raw" alt="image">
-    </main>
+            #links a {
+                text-decoration: none;
+                color: #ffa6c1;
 
-    <!-- todo: get mime type and change tag based on that -->
-</body>
+                height: 100%;
+                font-size: 1.25rem;
+                font-weight: 500;
+
+                transition: 200ms;
+                transition-property: filter transform;
+            }
+
+            #links a:hover {
+                filter: brightness(75%);
+            }
+
+            #links a:active {
+                transform: scale(0.8);
+            }
+
+            main {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                width: 100vw;
+            }
+
+            img,
+            video {
+                max-width: 100%;
+            }
+
+            pre {
+                width: 100%;
+                height: 100%;
+
+                padding: 1rem;
+                box-sizing: border-box;
+            }
+
+            code {
+                width: 100%;
+                height: 100%;
+
+                background-color: transparent !important;
+                padding: 0 !important;
+
+                font-family: "JetBrains Mono", monospace;
+            }
+
+            #error {
+                display: none;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 4px;
+
+                font-size: 1.5rem;
+            }
+
+            #error span:last-child {
+                font-size: 3rem;
+                font-weight: 900;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div id="left">
+                <span id="file-name">{{ file }}</span>
+                <span id="file-modified">Modified: {{ file_modified }}</span>
+            </div>
+
+            <div id="right">
+                <div id="file-size">{{ file_size }}</div>
+
+                <div id="seperator"></div>
+
+                <div id="links">
+                    <a href="/{{ file }}/raw">Raw</a>
+                    <a href="/{{ file }}/raw" download="{{ file }}">Download</a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div id="error">
+                <span>File could not be displayed</span>
+                <span>(✖╭╮✖)</span>
+            </div>
+        </main>
+
+        <script type="module">
+            const response = await fetch("/{{ file }}/raw");
+            const contentType = response.headers.get("Content-Type");
+            const fileType = contentType.substring(0, contentType.indexOf("/"));
+
+            const mainElement = document.querySelector("main");
+            const errorElement = document.querySelector("#error");
+
+            switch (fileType) {
+                case "image":
+                    const imageElement = document.createElement("img");
+                    imageElement.src = "/{{ file }}/raw";
+                    imageElement.alt = "{{ file }}";
+
+                    mainElement.append(imageElement);
+                    break;
+                case "video":
+                    const videoElement = document.createElement("video");
+                    videoElement.src = "/{{ file }}/raw";
+                    videoElement.controls = true;
+                    videoElement.autoplay = true;
+
+                    mainElement.append(videoElement);
+                    break;
+                case "text":
+                    const preElement = document.createElement("pre");
+                    const codeElement = document.createElement("code");
+                    preElement.append(codeElement);
+
+                    codeElement.textContent = await response.text();
+
+                    mainElement.append(preElement);
+                    hljs.highlightAll();
+                    break;
+
+                default:
+                    errorElement.style.display = "flex";
+                    break;
+            }
+        </script>
+    </body>
 </html>
