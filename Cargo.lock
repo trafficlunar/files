@@ -314,6 +314,7 @@ dependencies = [
  "axum",
  "chrono",
  "dotenv",
+ "mime_guess",
  "minijinja",
  "rand",
  "serde_json",
