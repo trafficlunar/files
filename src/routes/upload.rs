@@ -1,11 +1,6 @@
-use rand::{distributions::Alphanumeric, thread_rng, Rng};
+use axum::{Json, http::StatusCode};
+use serde_json::{json, Value};
 
-pub async fn route() -> String {
-    let rand_string = thread_rng()
-        .sample_iter(&Alphanumeric)
-        .map(char::from)
-        .take(8)
-        .collect();
-
-    rand_string
+pub async fn handler() -> Result<Json<Value>, StatusCode> {
+    Ok(Json(json!({ "success": true })))
 }
