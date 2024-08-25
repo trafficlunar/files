@@ -13,11 +13,26 @@ struct PreviewTemplate<'a> {
     page_title: &'a str,
 }
 
-pub async fn route(Path(filename): Path<String>) -> Result<Html<String>, StatusCode> {
+#[derive(Template)]
+#[template(path = "error.html")]
+struct ErrorTemplate<'a> {
+    file: &'a str,
+    page_title: &'a str,
+    error: &'a str,
+}
+
+pub async fn handler(
+    Path(filename): Path<String>,
+) -> Result<Html<String>, (StatusCode, Html<String>)> {
     let page_title = std::env::var("PAGE_TITLE").unwrap_or_else(|_| "files".to_string());
 
     let file_path = PathBuf::from("uploads").join(&filename);
-    let metadata = fs::metadata(file_path).map_err(|_| StatusCode::NOT_FOUND)?;
+    let metadata = fs::metadata(file_path).map_err(|_| {
+        (
+            StatusCode::NOT_FOUND,
+            render_error(&filename, &page_title, "File not found!"),
+        )
+    })?;
 
     let modified_time = metadata
         .modified()
@@ -26,7 +41,12 @@ pub async fn route(Path(filename): Path<String>) -> Result<Html<String>, StatusC
                 .format("%Y-%m-%d at %H:%M:%S")
                 .to_string()
         })
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|_| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                render_error(&filename, &page_title, "Internal Server Error"),
+            )
+        })?;
 
     const SIZES: [&str; 5] = ["B", "KB", "MB", "GB", "TB"];
 
@@ -42,8 +62,23 @@ pub async fn route(Path(filename): Path<String>) -> Result<Html<String>, StatusC
         page_title: &page_title,
     };
 
-    template
+    template.render().map(Html).map_err(|_| {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            render_error(&filename, &page_title, "Error rendering template"),
+        )
+    })
+}
+
+fn render_error(filename: &str, page_title: &str, error: &str) -> Html<String> {
+    let error_template = ErrorTemplate {
+        file: filename,
+        page_title,
+        error,
+    };
+
+    error_template
         .render()
         .map(Html)
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+        .unwrap_or_else(|_| Html("Error rendering error template".to_string()))
 }
