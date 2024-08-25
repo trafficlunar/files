@@ -9,7 +9,7 @@ use axum::{
 use tokio::fs::File;
 use tokio_util::io::ReaderStream;
 
-pub async fn route(Path(filename): Path<String>) -> impl IntoResponse {
+pub async fn handler(Path(filename): Path<String>) -> impl IntoResponse {
     let file_path = PathBuf::from("uploads").join(&filename);
 
     let file = match File::open(&file_path).await {
