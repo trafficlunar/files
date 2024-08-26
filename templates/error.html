@@ -3,6 +3,15 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{{ file }} — {{ page_title }}</title>
+        
+        <meta name="title" content="{{ file }} — {{ page_title }}" />
+        <meta name="description" content="An error occurred!" />
+
+        <meta property="og:image" content="{{ file }}/raw">
+        <meta property="og:image:type" content="image/png">
+        <meta property="og:image:width" content="250">
+        <meta property="og:image:height" content="250">
+        <meta name="theme-color" content="#ffa6c1">
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,6 +37,12 @@
                 font-family: "JetBrains Mono", monospace;
             }
 
+            #face {
+                font-size: 3rem;
+                font-weight: 900;
+                margin-bottom: 0.5rem;
+            }
+
             #error {
                 font-size: 2rem;
                 font-weight: 900;
@@ -39,6 +54,7 @@
         </style>
     </head>
     <body>
+        <span id="face">(✖╭╮✖)</span>
         <span id="error">{{ error }}</span>
         <span id="file-name">requested file: {{ file }}</span>
     </body>
