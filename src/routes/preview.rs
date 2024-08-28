@@ -30,7 +30,7 @@ pub async fn handler(
     let metadata = fs::metadata(file_path).map_err(|_| {
         (
             StatusCode::NOT_FOUND,
-            render_error(&filename, &page_title, "File not found!"),
+            render_error(&filename, &page_title, "File not found"),
         )
     })?;
 
@@ -44,7 +44,7 @@ pub async fn handler(
         .map_err(|_| {
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                render_error(&filename, &page_title, "Internal Server Error"),
+                render_error(&filename, &page_title, "Internal server error while getting the modified time"),
             )
         })?;
 
