@@ -1,0 +1,1 @@
+- change `/:filename/` to `/uploads/:filename/`
