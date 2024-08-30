@@ -1,9 +1,14 @@
+use std::time::Duration;
+
 use axum::{
+    error_handling::HandleErrorLayer,
     extract::DefaultBodyLimit,
+    http::StatusCode,
     response::Redirect,
     routing::{delete, get, post},
     Router,
 };
+use tower::{buffer::BufferLayer, limit::RateLimitLayer, ServiceBuilder};
 use tower_http::{
     services::ServeFile,
     trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer},
@@ -22,19 +27,12 @@ mod raw;
 mod upload;
 
 pub async fn app() -> Router {
-    // let password = std::env::var("GENERATE_PASSWORD")
-    //     .map_or_else(|_| "false".to_string(), |generate_password| {
-    //         if generate_password == "true" {
-    //             password::generate_password()
-    //         } else {
-    //             std::env::var("PASSWORD").expect("PASSWORD must be set when GENERATE_PASSWORD is not")
-    //         }
-    //     });
-
+    let password = password::get_password();
+    
     Router::new()
         .route("/upload", post(upload::handler))
         .route("/delete", delete(delete::handler))
-        .route_layer(ValidateRequestHeaderLayer::bearer("broken"))
+        .route_layer(ValidateRequestHeaderLayer::bearer(&password))
         .route(
             "/",
             get(|| async { Redirect::permanent("https://github.com/axolotlmaid/files/") }),
@@ -45,11 +43,21 @@ pub async fn app() -> Router {
         .route("/uploads/:filename/info", get(info::handler))
         .fallback(notfound::handler)
         .layer(
-            TraceLayer::new_for_http()
-                .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
-                .on_response(DefaultOnResponse::new().level(Level::INFO)),
+            ServiceBuilder::new()
+                .layer(
+                    TraceLayer::new_for_http()
+                        .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
+                        .on_response(DefaultOnResponse::new().level(Level::INFO)),
+                )
+                .layer(HandleErrorLayer::new(|err| async move {
+                    (
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        format!("Unhandled error: {}", err),
+                    )
+                }))
+                .layer(DefaultBodyLimit::max(1000 * 1000 * 1000)) // 1 GB
+                .layer(BufferLayer::new(1024))
+                .layer(RateLimitLayer::new(5, Duration::from_secs(5)))
+                .into_inner(),
         )
-        .layer(DefaultBodyLimit::max(1024 * 1024 * 1024)) // 1 GB
-                                                          // .layer(BufferLayer::new(1024))
-                                                          // .layer(RateLimitLayer::new(5, Duration::from_secs(1)))
 }
