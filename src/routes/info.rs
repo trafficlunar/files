@@ -21,7 +21,7 @@ pub async fn handler(
         .map_err(|_| {
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                Json(json!({ "success": false, "error": "Internal server error while getting the modified time" })),
+                Json(json!({ "success": false, "error": "Error occurred while getting the modified time" })),
             )
         })?;
 
