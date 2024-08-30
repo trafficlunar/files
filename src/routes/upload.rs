@@ -32,8 +32,8 @@ pub async fn handler(mut multipart: Multipart) -> Result<Json<Value>, (StatusCod
         return Ok(Json(json!({
             "success": true,
             "name": name,
-            "url": format!("{}{}/raw", &base_url, &name),
-            "url_preview": base_url + &name
+            "url": format!("{}/uploads/{}/raw", &base_url, &name),
+            "url_preview": format!("{}/uploads/{}", &base_url, &name)
         })));
     }
 
