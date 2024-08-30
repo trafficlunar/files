@@ -1,10 +1,9 @@
-use std::time::Duration;
-
 use axum::{
-    extract::DefaultBodyLimit, http::StatusCode, response::{IntoResponse, Redirect}, routing::{delete, get, post}, Json, Router
+    extract::DefaultBodyLimit,
+    response::Redirect,
+    routing::{delete, get, post},
+    Router,
 };
-use serde_json::json;
-use tower::{buffer::BufferLayer, limit::RateLimitLayer};
 use tower_http::{
     services::ServeFile,
     trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer},
@@ -15,11 +14,12 @@ use tracing::Level;
 #[path = "password.rs"]
 mod password;
 
-mod upload;
 mod delete;
+mod info;
+mod notfound;
 mod preview;
 mod raw;
-mod info;
+mod upload;
 
 pub async fn app() -> Router {
     // let password = std::env::var("GENERATE_PASSWORD")
@@ -40,20 +40,16 @@ pub async fn app() -> Router {
             get(|| async { Redirect::permanent("https://github.com/axolotlmaid/files/") }),
         )
         .route_service("/favicon.ico", ServeFile::new("favicon.ico"))
-        .route("/:filename", get(preview::handler))
-        .route("/:filename/raw", get(raw::handler))
-        .route("/:filename/info", get(info::handler))
-        .fallback(handler_404)
+        .route("/uploads/:filename", get(preview::handler))
+        .route("/uploads/:filename/raw", get(raw::handler))
+        .route("/uploads/:filename/info", get(info::handler))
+        .fallback(notfound::handler)
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
                 .on_response(DefaultOnResponse::new().level(Level::INFO)),
         )
         .layer(DefaultBodyLimit::max(1024 * 1024 * 1024)) // 1 GB
-        // .layer(BufferLayer::new(1024))        
-        // .layer(RateLimitLayer::new(5, Duration::from_secs(1)))
-}
-
-async fn handler_404() -> impl IntoResponse {
-    (StatusCode::NOT_FOUND, Json(json!({ "success": false, "error": "404 - not found"})))
+                                                          // .layer(BufferLayer::new(1024))
+                                                          // .layer(RateLimitLayer::new(5, Duration::from_secs(1)))
 }
