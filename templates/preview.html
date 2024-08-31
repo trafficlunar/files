@@ -221,6 +221,7 @@
                     const codeElement = document.createElement("code");
                     preElement.append(codeElement);
 
+                    const response = await fetch("/uploads/{{ file }}/raw");
                     codeElement.textContent = await response.text();
 
                     mainElement.append(preElement);
