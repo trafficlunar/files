@@ -9,6 +9,7 @@ mod error;
 #[template(path = "directory.html")]
 struct DirectoryTemplate<'a> {
     files: Vec<String>,
+    password: &'a str,
     page_title: &'a str,
 }
 
@@ -16,7 +17,7 @@ pub async fn handler() -> Result<Html<String>, (StatusCode, Html<String>)> {
     let page_title = std::env::var("PAGE_TITLE").unwrap_or_else(|_| "files".to_string());
 
     let uploads = WalkDir::new("uploads/");
-    let files: Vec<String> = uploads
+    let files = uploads
         .into_iter()
         .filter_map(|entry| entry.ok())
         .filter(|entry| entry.file_type().is_file())
@@ -25,6 +26,7 @@ pub async fn handler() -> Result<Html<String>, (StatusCode, Html<String>)> {
 
     let template = DirectoryTemplate {
         files,
+        password: "help",
         page_title: &page_title,
     };
 
