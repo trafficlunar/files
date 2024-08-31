@@ -2,15 +2,9 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{{ file }} — {{ page_title }}</title>
+        <title>ERROR — {{ page_title }}</title>
         
-        <meta name="title" content="{{ file }} — {{ page_title }}" />
-        <meta name="description" content="An error occurred!" />
-
-        <meta property="og:image" content="{{ file }}/raw">
-        <meta property="og:image:type" content="image/png">
-        <meta property="og:image:width" content="250">
-        <meta property="og:image:height" content="250">
+        <meta name="title" content="An error occurred! — {{ page_title }}" />
         <meta name="theme-color" content="#ffa6c1">
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -48,7 +42,7 @@
                 font-weight: 900;
             }
 
-            #file-name {
+            #url {
                 font-weight: 500;
             }
         </style>
@@ -56,6 +50,6 @@
     <body>
         <span id="face">(✖╭╮✖)</span>
         <span id="error">{{ error }}</span>
-        <span id="file-name">requested file: {{ file }}</span>
+        <span id="url">requested url: {{ url }}</span>
     </body>
 </html>
