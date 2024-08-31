@@ -4,6 +4,9 @@ use askama::Template;
 use axum::{extract::Path, http::StatusCode, response::Html};
 use chrono::{DateTime, Local};
 
+#[path = "../error.rs"]
+mod error;
+
 #[derive(Template)]
 #[template(path = "preview.html")]
 struct PreviewTemplate<'a> {
@@ -13,24 +16,17 @@ struct PreviewTemplate<'a> {
     page_title: &'a str,
 }
 
-#[derive(Template)]
-#[template(path = "error.html")]
-struct ErrorTemplate<'a> {
-    file: &'a str,
-    page_title: &'a str,
-    error: &'a str,
-}
-
 pub async fn handler(
     Path(filename): Path<String>,
 ) -> Result<Html<String>, (StatusCode, Html<String>)> {
     let page_title = std::env::var("PAGE_TITLE").unwrap_or_else(|_| "files".to_string());
+    let formatted_url = format!("/uploads/{}", &filename);
 
     let file_path = PathBuf::from("uploads").join(&filename);
     let metadata = fs::metadata(file_path).map_err(|_| {
         (
             StatusCode::NOT_FOUND,
-            render_error(&filename, &page_title, "File not found"),
+            error::render_error(&formatted_url, "File not found"),
         )
     })?;
 
@@ -44,7 +40,7 @@ pub async fn handler(
         .map_err(|_| {
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                render_error(&filename, &page_title, "Internal server error while getting the modified time"),
+                error::render_error(&formatted_url, "Internal server error while getting the modified time"),
             )
         })?;
 
@@ -65,20 +61,7 @@ pub async fn handler(
     template.render().map(Html).map_err(|_| {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
-            render_error(&filename, &page_title, "Error rendering template"),
+            error::render_error(&formatted_url, "Error rendering template"),
         )
     })
-}
-
-fn render_error(filename: &str, page_title: &str, error: &str) -> Html<String> {
-    let error_template = ErrorTemplate {
-        file: filename,
-        page_title,
-        error,
-    };
-
-    error_template
-        .render()
-        .map(Html)
-        .unwrap_or_else(|_| Html("Error rendering error template".to_string()))
 }
