@@ -15,8 +15,8 @@
             body {
                 display: flex;
                 flex-direction: column;
-                justify-content: center;
                 align-items: center;
+                gap: 4px;
 
                 height: 100%;
                 margin: 0;
@@ -28,25 +28,65 @@
                 font-family: "JetBrains Mono", monospace;
             }
 
-            #face {
-                font-size: 3rem;
-                font-weight: 900;
-                margin-bottom: 0.5rem;
+            .file {
+                display: flex;
+                justify-content: space-between;
+
+                width: 50rem;
+                padding: 0.5em;
+                background-color: #1e1e2e;
+                border-radius: 4px;
             }
 
-            #error {
-                font-size: 2rem;
-                font-weight: 900;
+            .file-name {
+                color: #ffa6c1;
+                text-decoration: none;
+                font-weight: 600;
             }
 
-            #file-name {
-                font-weight: 500;
+            .buttons {
+                display: flex;
+                gap: 4px;
+            }
+
+            button {
+                color: #ffa6c1;
+                font-family: "JetBrains Mono", monospace;
+
+                background-color: transparent;
+                border: none;
+                outline: none;
+
+                cursor: pointer;
+            }
+
+            .file-name,
+            button {
+                transition: 200ms;
+                transition-property: filter transform;
+            }
+
+            .file-name:hover,
+            button:hover {
+                filter: brightness(75%);
+            }
+
+            .file-name:active,
+            button:active {
+                transform: scale(0.8);
             }
         </style>
     </head>
     <body>
-        <span id="face">(✖╭╮✖)</span>
-        <span id="error">{{ error }}</span>
-        <span id="file-name">requested file: {{ file }}</span>
+        {% for file in files %}
+            <div class="file">
+                <a class="file-name" href="/uploads/{{ file }}">{{ file }}</a>
+
+                <div class="buttons">
+                    <button>rename</button>
+                    <button>delete</button>
+                </div>
+            </div>
+        {% endfor %}
     </body>
 </html>

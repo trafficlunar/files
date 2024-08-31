@@ -17,33 +17,29 @@ use tower_http::{
 };
 use tracing::Level;
 
+mod api;
+mod files;
+mod notfound;
 #[path = "password.rs"]
 mod password;
-
 use crate::metrics;
-
-mod delete;
-mod info;
-mod notfound;
-mod preview;
-mod raw;
-mod upload;
 
 pub async fn app() -> Router {
     let password = password::get_password();
 
     Router::new()
-        .route("/upload", post(upload::handler))
-        .route("/delete", delete(delete::handler))
+        .route("/upload", post(api::upload::handler))
+        .route("/delete", delete(api::delete::handler))
         .route_layer(ValidateRequestHeaderLayer::bearer(&password))
         .route(
             "/",
             get(|| async { Redirect::permanent("https://github.com/axolotlmaid/files/") }),
         )
         .route_service("/favicon.ico", ServeFile::new("favicon.ico"))
-        .route("/uploads/:filename", get(preview::handler))
-        .route("/uploads/:filename/raw", get(raw::handler))
-        .route("/uploads/:filename/info", get(info::handler))
+        .route("/uploads", get(files::directory::handler))
+        .route("/uploads/:filename", get(files::preview::handler))
+        .route("/uploads/:filename/raw", get(files::raw::handler))
+        .route("/uploads/:filename/info", get(files::info::handler))
         .fallback(notfound::handler)
         .route_layer(middleware::from_fn(metrics::track_metrics))
         .layer(
