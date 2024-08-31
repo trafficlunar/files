@@ -24,12 +24,14 @@ To delete a file, do the same request as uploading but use the DELETE method and
 There is two ways to view a specific file - you can either go to the URL which is `/uploads/file_name_here` or go to the same URL but with `/raw` at the end like `/uploads/file_name_here/raw`
 
 ## installing
-1. Cloning repository
+1. Clone the repository
 ```bash
 git clone https://github.com/axolotlmaid/files
 cd files
 ```
 
-2. Rename `.env.preview` to `.env` and edit to your liking.
+2. Rename `.env.preview` to `.env` and edit to your liking
 
-3. Run the server
+3. (optional) Change the `favicon.ico` to whatever you want
+
+4. Run the server
