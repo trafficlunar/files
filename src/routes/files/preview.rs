@@ -13,6 +13,7 @@ struct PreviewTemplate<'a> {
     file: &'a str,
     file_modified: &'a str,
     file_size: &'a str,
+    mime_type: &'a str,
     page_title: &'a str,
 }
 
@@ -23,7 +24,7 @@ pub async fn handler(
     let formatted_url = format!("/uploads/{}", &filename);
 
     let file_path = PathBuf::from("uploads").join(&filename);
-    let metadata = fs::metadata(file_path).map_err(|_| {
+    let metadata = fs::metadata(&file_path).map_err(|_| {
         (
             StatusCode::NOT_FOUND,
             error::render_error(&formatted_url, "File not found"),
@@ -40,7 +41,7 @@ pub async fn handler(
         .map_err(|_| {
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                error::render_error(&formatted_url, "Internal server error while getting the modified time"),
+                error::render_error(&formatted_url, "Error occurred while getting the modified time"),
             )
         })?;
 
@@ -51,10 +52,16 @@ pub async fn handler(
     let size_divided = size as f64 / 1000_f64.powi(size_index as i32);
     let size_formatted = format!("{:.1} {}", size_divided, SIZES[size_index]);
 
+    let mime_type = match mime_guess::from_path(&file_path).first_raw() {
+        Some(mime) => mime,
+        None => return Err((StatusCode::INTERNAL_SERVER_ERROR, error::render_error(&formatted_url, "Error occurred while getting the MIME type"))),
+    };
+
     let template = PreviewTemplate {
         file: &filename,
         file_modified: &modified_time,
         file_size: &size_formatted,
+        mime_type,
         page_title: &page_title,
     };
 
