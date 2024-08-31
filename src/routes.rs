@@ -6,7 +6,7 @@ use axum::{
     http::StatusCode,
     middleware,
     response::Redirect,
-    routing::{delete, get, post},
+    routing::{delete, get, post, put},
     Router,
 };
 use tower::{buffer::BufferLayer, limit::RateLimitLayer, ServiceBuilder};
@@ -30,6 +30,7 @@ pub async fn app() -> Router {
     Router::new()
         .route("/upload", post(api::upload::handler))
         .route("/delete", delete(api::delete::handler))
+        .route("/rename", put(api::rename::handler))
         .route_layer(ValidateRequestHeaderLayer::bearer(&password))
         .route(
             "/",

@@ -1,0 +1,23 @@
+use std::path::PathBuf;
+
+use axum::{Json, http::StatusCode};
+use serde::Deserialize;
+use serde_json::{json, Value};
+use tokio::fs;
+
+#[derive(Deserialize)]
+pub struct RenameFile {
+    name: String,
+    new_name: String
+}
+
+pub async fn handler(Json(payload): Json<RenameFile>) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
+    let uploads = PathBuf::from("uploads");
+    let file = uploads.join(&payload.name);
+    let new_file = uploads.join(&payload.new_name);
+    
+    match fs::rename(file, new_file).await {
+        Ok(_) => Ok(Json(json!({ "success": true }))),
+        Err(_) => Err((StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "success": false, "error": "Failed to rename file" })))),
+    }
+}
