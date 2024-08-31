@@ -4,6 +4,7 @@ use axum::{
     error_handling::HandleErrorLayer,
     extract::DefaultBodyLimit,
     http::StatusCode,
+    middleware,
     response::Redirect,
     routing::{delete, get, post},
     Router,
@@ -19,6 +20,8 @@ use tracing::Level;
 #[path = "password.rs"]
 mod password;
 
+use crate::metrics;
+
 mod delete;
 mod info;
 mod notfound;
@@ -28,7 +31,7 @@ mod upload;
 
 pub async fn app() -> Router {
     let password = password::get_password();
-    
+
     Router::new()
         .route("/upload", post(upload::handler))
         .route("/delete", delete(delete::handler))
@@ -42,6 +45,7 @@ pub async fn app() -> Router {
         .route("/uploads/:filename/raw", get(raw::handler))
         .route("/uploads/:filename/info", get(info::handler))
         .fallback(notfound::handler)
+        .route_layer(middleware::from_fn(metrics::track_metrics))
         .layer(
             ServiceBuilder::new()
                 .layer(
