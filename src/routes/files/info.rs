@@ -7,6 +7,8 @@ use serde_json::{json, Value};
 pub async fn handler(
     Path(filename): Path<String>,
 ) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
+    let base_url = std::env::var("BASE_URL").expect("BASE_URL must be set.");
+
     let file_path = PathBuf::from("uploads").join(&filename);
     let metadata = fs::metadata(file_path).map_err(|_| {
         (
@@ -27,8 +29,10 @@ pub async fn handler(
 
     Ok(Json(json!({
         "success": true,
-        "file": filename,
+        "file": &filename,
         "modified": modified_time,
-        "size": metadata.size()
+        "size": metadata.size(),
+        "url": format!("{}/uploads/{}/raw", &base_url, &filename),
+        "url_preview": format!("{}/uploads/{}", &base_url, &filename)
     })))
 }
