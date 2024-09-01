@@ -28,6 +28,7 @@ pub async fn app() -> Router {
     let password = password::get_password();
 
     Router::new()
+        .route("/uploads", get(files::directory::handler))
         .route("/upload", post(api::upload::handler))
         .route("/delete", delete(api::delete::handler))
         .route("/rename", put(api::rename::handler))
@@ -37,7 +38,6 @@ pub async fn app() -> Router {
             get(|| async { Redirect::permanent("https://github.com/axolotlmaid/files/") }),
         )
         .route_service("/favicon.ico", ServeFile::new("favicon.ico"))
-        .route("/uploads", get(files::directory::handler))
         .route("/uploads/:filename", get(files::preview::handler))
         .route("/uploads/:filename/raw", get(files::raw::handler))
         .route("/uploads/:filename/info", get(files::info::handler))
