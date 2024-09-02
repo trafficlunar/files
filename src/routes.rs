@@ -28,19 +28,27 @@ pub async fn app() -> Router {
     let password = password::get_password();
 
     Router::new()
-        .route("/uploads", get(files::directory::handler))
-        .route("/upload", post(api::upload::handler))
-        .route("/delete", delete(api::delete::handler))
-        .route("/rename", put(api::rename::handler))
-        .route_layer(ValidateRequestHeaderLayer::bearer(&password))
         .route(
             "/",
             get(|| async { Redirect::permanent("https://github.com/axolotlmaid/files/") }),
         )
         .route_service("/favicon.ico", ServeFile::new("favicon.ico"))
-        .route("/uploads/:filename", get(files::preview::handler))
-        .route("/uploads/:filename/raw", get(files::raw::handler))
-        .route("/uploads/:filename/info", get(files::info::handler))
+        .nest(
+            "/api",
+            Router::new()
+                .route("/upload", post(api::upload::handler))
+                .route("/delete", delete(api::delete::handler))
+                .route("/rename", put(api::rename::handler))
+                .route_layer(ValidateRequestHeaderLayer::bearer(&password))
+        )
+        .nest(
+            "/uploads",
+            Router::new()
+                .route("/", get(files::directory::handler))
+                .route("/:filename", get(files::preview::handler))
+                .route("/:filename/raw", get(files::raw::handler))
+                .route("/:filename/info", get(files::info::handler)),
+        )
         .fallback(notfound::handler)
         .route_layer(middleware::from_fn(metrics::track_metrics))
         .layer(
