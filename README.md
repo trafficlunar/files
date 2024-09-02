@@ -16,10 +16,10 @@ The code for my files server made in Rust hosted at https://files.axolotlmaid.co
 
 ## how to use
 ### uploading
-To upload a file, make a POST request to the `/upload` route with the file attached with its file name and type and also with the header `Authorization` along with a value of `Bearer password_here`.
+To upload a file, make a POST request to the `/api/upload` route with the file attached alongside the file name and type and also with the header `Authorization` along with a value of `Bearer password_here`.
 
 ### deleting
-To delete a file, make a DELETE request to `/delete` with the `Authorization` header and set the body to the JSON example below:
+To delete a file, make a DELETE request to `/api/delete` with the `Authorization` header and set the body to the JSON example below:
 ```json
 {
     "name": "file_name_here"
@@ -27,7 +27,7 @@ To delete a file, make a DELETE request to `/delete` with the `Authorization` he
 ```
 
 ### renaming
-To rename a file, do the same request as deleting but instead to the route `/rename` and set the body to the JSON example below:
+To rename a file, do the same request as deleting but instead to the route `/api/rename` and set the body to the JSON example below:
 ```json
 {
     "name": "file_name_here",
