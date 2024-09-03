@@ -6,8 +6,10 @@ use tokio::net::TcpListener;
 use tower::Layer;
 use tower_http::normalize_path::NormalizePathLayer;
 
-mod routes;
 mod metrics;
+mod middleware;
+mod password;
+mod routes;
 
 async fn start_main_server() {
     let app = NormalizePathLayer::trim_trailing_slash().layer(routes::app().await);
@@ -63,10 +65,11 @@ github: https://github.com/axolotlmaid/files
 
     fs::create_dir_all("uploads/").unwrap();
 
-    let metrics_enabled = std::env::var("METRICS_ENABLED").unwrap_or_else(|_| "false".to_string()) == "true";
+    let metrics_enabled =
+        std::env::var("METRICS_ENABLED").unwrap_or_else(|_| "false".to_string()) == "true";
 
     if metrics_enabled {
-        tokio::join!(start_main_server(), start_metrics_server());   
+        tokio::join!(start_main_server(), start_metrics_server());
     } else {
         start_main_server().await;
     }
