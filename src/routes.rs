@@ -4,7 +4,6 @@ use axum::{
     error_handling::HandleErrorLayer,
     extract::DefaultBodyLimit,
     http::StatusCode,
-    middleware,
     response::Redirect,
     routing::{delete, get, post, put},
     Router,
@@ -12,6 +11,7 @@ use axum::{
 use tower::{buffer::BufferLayer, limit::RateLimitLayer, ServiceBuilder};
 use tower_http::{
     services::ServeFile,
+    timeout::TimeoutLayer,
     trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer},
     validate_request::ValidateRequestHeaderLayer,
 };
@@ -20,9 +20,10 @@ use tracing::Level;
 mod api;
 mod files;
 mod notfound;
-#[path = "password.rs"]
-mod password;
+
 use crate::metrics;
+use crate::middleware;
+use crate::password;
 
 pub async fn app() -> Router {
     let password = password::get_password();
@@ -39,7 +40,7 @@ pub async fn app() -> Router {
                 .route("/upload", post(api::upload::handler))
                 .route("/delete", delete(api::delete::handler))
                 .route("/rename", put(api::rename::handler))
-                .route_layer(ValidateRequestHeaderLayer::bearer(&password))
+                .route_layer(ValidateRequestHeaderLayer::bearer(&password)),
         )
         .nest(
             "/uploads",
@@ -50,7 +51,7 @@ pub async fn app() -> Router {
                 .route("/:filename/info", get(files::info::handler)),
         )
         .fallback(notfound::handler)
-        .route_layer(middleware::from_fn(metrics::track_metrics))
+        .route_layer(axum::middleware::from_fn(metrics::track_metrics))
         .layer(
             ServiceBuilder::new()
                 .layer(
@@ -58,6 +59,9 @@ pub async fn app() -> Router {
                         .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
                         .on_response(DefaultOnResponse::new().level(Level::INFO)),
                 )
+                .layer(axum::middleware::from_fn(
+                    middleware::status_code::middleware,
+                ))
                 .layer(HandleErrorLayer::new(|err| async move {
                     (
                         StatusCode::INTERNAL_SERVER_ERROR,
@@ -67,6 +71,7 @@ pub async fn app() -> Router {
                 .layer(DefaultBodyLimit::max(1000 * 1000 * 1000)) // 1 GB
                 .layer(BufferLayer::new(1024))
                 .layer(RateLimitLayer::new(5, Duration::from_secs(5)))
+                .layer(TimeoutLayer::new(Duration::from_secs(30)))
                 .into_inner(),
         )
 }
