@@ -27,7 +27,7 @@ To delete a file, make a DELETE request to `/api/delete` with the `Authorization
 ```
 
 ### renaming
-To rename a file, do the same request as deleting but instead to the route `/api/rename` and set the body to the JSON example below:
+To rename a file, do the same request as deleting but instead to the route `/api/rename` with the method PUT and set the body to the JSON example below:
 ```json
 {
     "name": "file_name_here",
