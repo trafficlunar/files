@@ -100,27 +100,27 @@
 
         <script>
             function renameFile(file) {
-                const newFile = prompt(
-                    `Type the new file name for '${file}'`
-                );
+                const newFile = prompt(`Type the new file name for '${file}'`);
 
-                fetch("/rename", {
-                    method: "PUT",
-                    headers: {
-                        Authorization: "Bearer {{ password }}",
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ name: file, new_name: newFile }),
-                })
-                    .then(() => location.reload())
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                if (newFile) {
+                    fetch("/api/rename", {
+                        method: "PUT",
+                        headers: {
+                            Authorization: "Bearer {{ password }}",
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ name: file, new_name: newFile }),
+                    })
+                        .then(() => location.reload())
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                }
             }
 
             function deleteFile(file) {
                 if (confirm(`Delete '${file}'?`)) {
-                    fetch("/delete", {
+                    fetch("/api/delete", {
                         method: "DELETE",
                         headers: {
                             Authorization: "Bearer {{ password }}",
