@@ -57,13 +57,13 @@ github: https://github.com/axolotlmaid/files
     println!("{}", startup_text);
 
     dotenv().ok();
-
     tracing_subscriber::fmt()
         .with_target(false)
         .compact()
         .init();
 
     fs::create_dir_all("uploads/").unwrap();
+    password::init_password();
 
     let metrics_enabled =
         std::env::var("METRICS_ENABLED").unwrap_or_else(|_| "false".to_string()) == "true";

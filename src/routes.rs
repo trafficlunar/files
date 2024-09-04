@@ -40,7 +40,7 @@ pub async fn app() -> Router {
                 .route("/upload", post(api::upload::handler))
                 .route("/delete", delete(api::delete::handler))
                 .route("/rename", put(api::rename::handler))
-                .route_layer(ValidateRequestHeaderLayer::bearer(&password)),
+                .route_layer(ValidateRequestHeaderLayer::bearer(password)),
         )
         .nest(
             "/uploads",
