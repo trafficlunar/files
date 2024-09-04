@@ -28,20 +28,34 @@ use crate::password;
 pub async fn app() -> Router {
     let password = password::get_password();
 
+    let base_api_router = Router::new()
+        .route("/upload", post(api::upload::handler))
+        .route("/delete", delete(api::delete::handler))
+        .route("/rename", put(api::rename::handler));
+
+    let protect_directory = std::env::var("PROTECT_DIRECTORY")
+        .unwrap_or_else(|_| "true".to_string())
+        .parse::<bool>()
+        .unwrap_or(true);
+
+    // Put the route_layer above or below `/uploads` depending on `protect_directory` value
+    let api_router = if protect_directory {
+        base_api_router
+            .route("/uploads", get(api::directory::handler))
+            .route_layer(ValidateRequestHeaderLayer::bearer(password))
+    } else {
+        base_api_router
+            .route_layer(ValidateRequestHeaderLayer::bearer(password))
+            .route("/uploads", get(api::directory::handler))
+    };
+
     Router::new()
         .route(
             "/",
             get(|| async { Redirect::permanent("https://github.com/axolotlmaid/files/") }),
         )
         .route_service("/favicon.ico", ServeFile::new("favicon.ico"))
-        .nest(
-            "/api",
-            Router::new()
-                .route("/upload", post(api::upload::handler))
-                .route("/delete", delete(api::delete::handler))
-                .route("/rename", put(api::rename::handler))
-                .route_layer(ValidateRequestHeaderLayer::bearer(password)),
-        )
+        .nest("/api", api_router)
         .nest(
             "/uploads",
             Router::new()
