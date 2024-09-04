@@ -2,6 +2,8 @@ use askama::Template;
 use axum::{http::StatusCode, response::Html};
 use walkdir::WalkDir;
 
+use crate::password;
+
 #[path = "../error.rs"]
 mod error;
 
@@ -17,21 +19,23 @@ struct DirectoryTemplate<'a> {
 pub async fn handler() -> Result<Html<String>, (StatusCode, Html<String>)> {
     let page_title = std::env::var("PAGE_TITLE").unwrap_or_else(|_| "files".to_string());
     let enable_actions = std::env::var("ENABLE_FILE_ACTIONS_DIRECTORY")
-            .unwrap_or_else(|_| "true".to_string())
-            .parse::<bool>()
-            .unwrap_or(true);
+        .unwrap_or_else(|_| "true".to_string())
+        .parse::<bool>()
+        .unwrap_or(true);
 
     let uploads = WalkDir::new("uploads/");
-    let files = uploads
+    let mut files: Vec<String> = uploads
         .into_iter()
         .filter_map(|entry| entry.ok())
         .filter(|entry| entry.file_type().is_file())
         .filter_map(|entry| entry.file_name().to_str().map(|s| s.to_string()))
         .collect();
 
+    files.sort_by(|a, b| a.to_lowercase().cmp(&b.to_lowercase())); // Sorts files alphabetically case-insensitively
+
     let template = DirectoryTemplate {
         files,
-        password: "help",
+        password: password::get_password(),
         enable_actions,
         page_title: &page_title,
     };
