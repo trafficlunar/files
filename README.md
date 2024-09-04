@@ -8,6 +8,7 @@ The code for my files server made in Rust hosted at https://files.axolotlmaid.co
 
 ## features
 - Show contents / previews of files uploaded
+- Highlighted uploaded code with highlight.js
 - Uploading, deleting, and renaming with authorization
 - View information of a specific file in JSON form
 - Directory of uploads with optional authorization
@@ -38,11 +39,13 @@ To rename a file, do the same request as deleting but instead to the route `/api
 ### view all uploads (directory)
 To view all the uploads (also known as the directory), go to `/uploads` and enter the optional password. You can also delete and rename files and also upload on this page.
 
+There is also an option to do this in JSON form, to do this, create a GET request to `/api/uploads` which will return every file uploaded in a JSON string array. The `Authorization` header may be required if `PROTECT_DIRECTORY` is enabled in .env.
+
 ### viewing files
 There is two ways to view a specific file - you can either go to the URL with all the fancy styling which is `/uploads/file_name_here` or go to the same URL but with `/raw` and only the file itself at the end like `/uploads/file_name_here/raw`
 
-### viewing information of a file in JSON form
-To view information of a file (name, size, modified time, url) in JSON form, create a GET request to `/uploads/filename/info` like you would do above but with `/info` as the suffix. This does not require authorization.
+### viewing information of a file
+To view information of a file (name, size, modified time, url), create a GET request to `/uploads/filename/info` like you would do above but with `/info` as the suffix. This does not require authorization.
 
 ## installing
 ### docker (recommended)
