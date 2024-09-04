@@ -91,49 +91,53 @@
         <div class="file">
             <a class="file-name" href="/uploads/{{ file }}">{{ file }}</a>
 
+            {% if enable_actions %}
             <div class="buttons">
                 <button onclick="renameFile('{{ file }}')">rename</button>
                 <button onclick="deleteFile('{{ file }}')">delete</button>
             </div>
+            {% endif %}
         </div>
         {% endfor %}
+        
+        {% if enable_actions %}
+            <script>
+                function renameFile(file) {
+                    const newFile = prompt(`Type the new file name for '${file}'`);
 
-        <script>
-            function renameFile(file) {
-                const newFile = prompt(`Type the new file name for '${file}'`);
-
-                if (newFile) {
-                    fetch("/api/rename", {
-                        method: "PUT",
-                        headers: {
-                            Authorization: "Bearer {{ password }}",
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ name: file, new_name: newFile }),
-                    })
-                        .then(() => location.reload())
-                        .catch((error) => {
-                            console.log(error);
-                        });
+                    if (newFile) {
+                        fetch("/api/rename", {
+                            method: "PUT",
+                            headers: {
+                                Authorization: "Bearer {{ password }}",
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ name: file, new_name: newFile }),
+                        })
+                            .then(() => location.reload())
+                            .catch((error) => {
+                                console.log(error);
+                            });
+                    }
                 }
-            }
 
-            function deleteFile(file) {
-                if (confirm(`Delete '${file}'?`)) {
-                    fetch("/api/delete", {
-                        method: "DELETE",
-                        headers: {
-                            Authorization: "Bearer {{ password }}",
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ name: file }),
-                    })
-                        .then(() => location.reload())
-                        .catch((error) => {
-                            console.log(error);
-                        });
+                function deleteFile(file) {
+                    if (confirm(`Delete '${file}'?`)) {
+                        fetch("/api/delete", {
+                            method: "DELETE",
+                            headers: {
+                                Authorization: "Bearer {{ password }}",
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ name: file }),
+                        })
+                            .then(() => location.reload())
+                            .catch((error) => {
+                                console.log(error);
+                            });
+                    }
                 }
-            }
-        </script>
+            </script>
+        {% endif %}
     </body>
 </html>
