@@ -13,10 +13,7 @@ use walkdir::WalkDir;
 pub async fn app() -> Router {
     let recorder_handle = setup_metrics_recorder();
 
-    Router::new().route(
-        "/metrics",
-        get(move || ready(recorder_handle.render())),
-    )
+    Router::new().route("/metrics", get(move || ready(recorder_handle.render())))
 }
 
 fn setup_metrics_recorder() -> PrometheusHandle {

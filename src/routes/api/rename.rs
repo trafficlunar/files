@@ -8,21 +8,29 @@ use tokio::fs;
 #[derive(Deserialize)]
 pub struct RenameFile {
     name: String,
-    new_name: String
+    new_name: String,
 }
 
-pub async fn handler(result: Result<Json<RenameFile>, JsonRejection>) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
+pub async fn handler(
+    result: Result<Json<RenameFile>, JsonRejection>,
+) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
     match result {
         Ok(Json(payload)) => {
             let uploads = PathBuf::from("uploads");
             let file = uploads.join(&payload.name);
             let new_file = uploads.join(&payload.new_name);
-            
+
             match fs::rename(file, new_file).await {
                 Ok(_) => Ok(Json(json!({ "success": true }))),
-                Err(_) => Err((StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "success": false, "error": "Failed to rename file" })))),
+                Err(_) => Err((
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(json!({ "success": false, "error": "Failed to rename file" })),
+                )),
             }
-        },
-        Err(_) => Err((StatusCode::BAD_REQUEST, Json(json!({ "success": false, "error": "Invalid request body" }))))
+        }
+        Err(_) => Err((
+            StatusCode::BAD_REQUEST,
+            Json(json!({ "success": false, "error": "Invalid request body" })),
+        )),
     }
 }

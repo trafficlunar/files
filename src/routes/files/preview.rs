@@ -41,7 +41,10 @@ pub async fn handler(
         .map_err(|_| {
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                error::render_error(&formatted_url, "Error occurred while getting the modified time"),
+                error::render_error(
+                    &formatted_url,
+                    "Error occurred while getting the modified time",
+                ),
             )
         })?;
 
@@ -54,7 +57,12 @@ pub async fn handler(
 
     let mime_type = match mime_guess::from_path(&file_path).first_raw() {
         Some(mime) => mime,
-        None => return Err((StatusCode::INTERNAL_SERVER_ERROR, error::render_error(&formatted_url, "Error occurred while getting the MIME type"))),
+        None => {
+            return Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                error::render_error(&formatted_url, "Error occurred while getting the MIME type"),
+            ))
+        }
     };
 
     let template = PreviewTemplate {
