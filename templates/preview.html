@@ -48,8 +48,8 @@
             }
 
             header {
-                display: flex;
-                justify-content: space-between;
+                display: grid;
+                grid-template-columns: 1fr 20rem;
                 align-items: center;
 
                 padding: 0.5rem 1rem;
@@ -63,6 +63,7 @@
                 flex-direction: column;
 
                 font-size: 0.875rem;
+                overflow-x: auto;
             }
 
             #file-name {
@@ -76,7 +77,9 @@
 
             #right {
                 display: flex;
+                justify-content: end;
                 align-items: center;
+
                 gap: 24px;
                 height: 100%;
             }
@@ -166,14 +169,19 @@
                 font-weight: 900;
             }
 
-            @media only screen and (max-width: 800px) {
-                body {
+            @media only screen and (max-width: 1000px) {
+                 body {
                     grid-template-rows: 7.5rem auto;
                 }
 
                 header {
-                    flex-direction: column;
+                    grid-template-columns: 1fr;
                     align-items: start;
+                    padding-right: 0;
+                }
+                
+                #right {
+                    justify-content: start;
                 }
             }
         </style>
