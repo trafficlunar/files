@@ -17,7 +17,7 @@ The code for my files server made in Rust hosted at https://files.axolotlmaid.co
 
 ## how to use
 ### uploading
-To upload a file, make a POST request to the `/api/upload` route with the file attached alongside the file name and type and also with the header `Authorization` along with a value of `Bearer password_here`.
+To upload a file, make a POST request to the `/api/upload` route with the file attached alongside the file name and type and also with the header `Authorization` with a value of your password.
 
 ### deleting
 To delete a file, make a DELETE request to `/api/delete` with the `Authorization` header and set the body to the JSON example below:

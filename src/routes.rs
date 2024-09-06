@@ -13,7 +13,6 @@ use tower_http::{
     services::ServeFile,
     timeout::TimeoutLayer,
     trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer},
-    validate_request::ValidateRequestHeaderLayer,
 };
 use tracing::Level;
 
@@ -23,11 +22,8 @@ mod notfound;
 
 use crate::metrics;
 use crate::middleware;
-use crate::password;
 
 pub async fn app() -> Router {
-    let password = password::get_password();
-
     let base_api_router = Router::new()
         .route("/upload", post(api::upload::handler))
         .route("/delete", delete(api::delete::handler))
@@ -42,10 +38,14 @@ pub async fn app() -> Router {
     let api_router = if protect_directory {
         base_api_router
             .route("/uploads", get(api::directory::handler))
-            .route_layer(ValidateRequestHeaderLayer::bearer(password))
+            .route_layer(axum::middleware::from_fn(
+                middleware::authorization::middleware,
+            ))
     } else {
         base_api_router
-            .route_layer(ValidateRequestHeaderLayer::bearer(password))
+            .route_layer(axum::middleware::from_fn(
+                middleware::authorization::middleware,
+            ))
             .route("/uploads", get(api::directory::handler))
     };
 
