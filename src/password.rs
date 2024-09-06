@@ -11,7 +11,7 @@ pub static PASSWORD: OnceLock<String> = OnceLock::new();
 pub fn get_password() -> &'static str {
     PASSWORD
         .get()
-        .expect("Password has not been initalized!")
+        .expect("password has not been initalized!")
         .as_str()
 }
 
@@ -43,8 +43,14 @@ pub fn init_password() {
             tracing::info!("password is {}", generated_password);
             generated_password
         } else {
-            tracing::warn!("password is not set! anybody can upload, delete, and rename files!");
-            "".to_owned()
+            let password = std::env::var("PASSWORD").unwrap_or("".to_owned());
+
+            if password == "" {
+                tracing::warn!("password is not set! anybody can view the directory and upload, delete, and rename files!");
+                "".to_owned()
+            } else {
+                password
+            }
         }
     });
 }
