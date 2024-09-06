@@ -155,7 +155,7 @@
                         fetch("/api/rename", {
                             method: "PUT",
                             headers: {
-                                Authorization: "Bearer {{ password }}",
+                                Authorization: "{{ password }}",
                                 "Content-Type": "application/json",
                             },
                             body: JSON.stringify({ name: file, new_name: newFile }),
@@ -172,7 +172,7 @@
                         fetch("/api/delete", {
                             method: "DELETE",
                             headers: {
-                                Authorization: "Bearer {{ password }}",
+                                Authorization: "{{ password }}",
                                 "Content-Type": "application/json",
                             },
                             body: JSON.stringify({ name: file }),
