@@ -1,4 +1,4 @@
-use std::{future::ready, time::Instant};
+use std::{future::ready, path::PathBuf, time::Instant};
 
 use axum::{
     extract::{MatchedPath, Request},
@@ -14,7 +14,13 @@ use walkdir::WalkDir;
 pub async fn app() -> Router {
     let recorder_handle = setup_metrics_recorder();
 
-    Router::new().route("/metrics", get(move || ready(recorder_handle.render())))
+    Router::new()
+        .route("/", get(handler_root))
+        .route("/metrics", get(move || ready(recorder_handle.render())))
+}
+
+async fn handler_root() -> impl IntoResponse {
+    "https://github.com/axolotlmaid/files - metrics server"
 }
 
 // Metrics handlers
@@ -53,7 +59,12 @@ pub async fn track_metrics(req: Request, next: Next) -> impl IntoResponse {
         ("status", status),
     ];
 
-    let uploads = WalkDir::new("uploads/").into_iter().count();
+    let uploads_path = PathBuf::from("uploads");
+    let uploads = WalkDir::new(&uploads_path)
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|entry| entry.path() != uploads_path)
+        .count();
 
     metrics::gauge!("uploads").set(uploads as f64);
     metrics::counter!("http_requests_total", &labels).increment(1);
