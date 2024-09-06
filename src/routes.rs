@@ -29,6 +29,7 @@ pub async fn app() -> Router {
         .route("/delete", delete(api::delete::handler))
         .route("/rename", put(api::rename::handler));
 
+    // Get .env variables
     let protect_directory = std::env::var("PROTECT_DIRECTORY")
         .unwrap_or_else(|_| "true".to_string())
         .parse::<bool>()

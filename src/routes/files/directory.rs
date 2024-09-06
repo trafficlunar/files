@@ -31,8 +31,14 @@ pub struct LoginForm {
 // Handler for `/uploads`
 // Handler for login
 pub async fn handler() -> Result<Html<String>, (StatusCode, Html<String>)> {
-    // If there is no password - render the uploads template
-    if password::get_password() == "" {
+    // Get .env variables
+    let protect_directory = std::env::var("PROTECT_DIRECTORY")
+        .unwrap_or_else(|_| "true".to_string())
+        .parse::<bool>()
+        .unwrap_or(true);
+
+    // If there is no password or PROTECT_DIRECTORY is false - render the uploads template
+    if password::get_password() == "" || !protect_directory {
         return render_upload_template();
     } else {
         // Show login page if there is a password
