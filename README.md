@@ -12,7 +12,8 @@ The code for my files server made in Rust hosted at https://files.axolotlmaid.co
 - Uploading, deleting, and renaming with authorization
 - View information of a specific file in JSON form
 - Directory of uploads with optional authorization
-- Generate password on start up for more security
+- Generate password with specified length on start up for more security
+- Option to generate filenames and its length
 - Metrics for Prometheus and Grafana
 
 ## how to use
@@ -49,10 +50,41 @@ To view information of a file (name, size, modified time, url), create a GET req
 
 ## installing
 ### docker (recommended)
-To install / start this in Docker, run the command below:
+1. Clone the repository
 ```bash
-# todo
-docker run
+git clone https://github.com/axolotlmaid/files
+cd files
+```
+
+2. (optional) Change the `favicon.ico` to whatever you want
+
+3. Build the Docker image
+```bash
+docker build -t files .
+```
+
+4. Run the Docker image
+
+> [!NOTE]
+> Read [.env.example](https://github.com/axolotlmaid/files/blob/master/.env.example) for more information on these variables.
+
+```bash
+docker run -d \
+    --restart=always \
+    -e BASE_URL="http://localhost:3000" \
+    -e PAGE_TITLE="files" \
+    -e PASSWORD="" \
+    -e PROTECT_DIRECTORY=true \
+    -e ENABLE_FILE_ACTIONS_DIRECTORY=true \
+    -e GENERATE_PASSWORD=true \
+    -e GENERATE_PASSWORD_LENGTH=16 \
+    -e GENERATE_FILENAME=false \
+    -e GENERATE_FILENAME_LENGTH=8 \
+    -e METRICS_ENABLED=true \
+    -e METRICS_PORT=3001 \
+    -p 3000:3000 \
+    --name files \
+    files:latest
 ```
 
 ### manually
@@ -61,6 +93,7 @@ docker run
 git clone https://github.com/axolotlmaid/files
 cd files
 ```
+
 2. Rename `.env.preview` to `.env` and edit to your liking
 3. (optional) Change the `favicon.ico` to whatever you want
 4. Build and run the server
