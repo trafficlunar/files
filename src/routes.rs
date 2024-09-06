@@ -20,8 +20,8 @@ mod api;
 mod files;
 mod notfound;
 
-use crate::metrics;
 use crate::middleware;
+use crate::{metrics, password};
 
 pub async fn app() -> Router {
     let base_api_router = Router::new()
@@ -34,8 +34,10 @@ pub async fn app() -> Router {
         .parse::<bool>()
         .unwrap_or(true);
 
-    // Put the route_layer above or below `/uploads` depending on `protect_directory` value
-    let api_router = if protect_directory {
+    // Put the route_layer above or below `/uploads` depending on `protect_directory` and `password` value
+    let api_router = if password::get_password() == "" {
+        base_api_router.route("/uploads", get(api::directory::handler))
+    } else if protect_directory {
         base_api_router
             .route("/uploads", get(api::directory::handler))
             .route_layer(axum::middleware::from_fn(
@@ -59,7 +61,10 @@ pub async fn app() -> Router {
         .nest(
             "/uploads",
             Router::new()
-                .route("/", get(files::directory::handler).post(files::directory::login_form))
+                .route(
+                    "/",
+                    get(files::directory::handler).post(files::directory::login_form),
+                )
                 .route("/:filename", get(files::preview::handler))
                 .route("/:filename/raw", get(files::raw::handler))
                 .route("/:filename/info", get(files::info::handler)),
@@ -82,7 +87,7 @@ pub async fn app() -> Router {
                         format!("Unhandled error: {}", err),
                     )
                 }))
-                .layer(DefaultBodyLimit::max(1000 * 1000 * 1000)) // 1 GB
+                .layer(DefaultBodyLimit::max(1000 * 1000 * 1000)) // Allow files to be 1 GB in space
                 .layer(BufferLayer::new(1024))
                 .layer(RateLimitLayer::new(5, Duration::from_secs(5)))
                 .layer(TimeoutLayer::new(Duration::from_secs(30)))
