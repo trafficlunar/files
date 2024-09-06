@@ -9,9 +9,12 @@ struct ErrorTemplate<'a> {
     error: &'a str,
 }
 
+// Render error template
 pub fn render_error(url: &str, error: &str) -> Html<String> {
+    // Get .env variables
     let page_title = std::env::var("PAGE_TITLE").unwrap_or_else(|_| "files".to_string());
 
+    // Render template
     let error_template = ErrorTemplate {
         url,
         page_title: &page_title,

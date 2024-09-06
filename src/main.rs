@@ -11,6 +11,7 @@ mod middleware;
 mod password;
 mod routes;
 
+// Start the main server
 async fn start_main_server() {
     let app = NormalizePathLayer::trim_trailing_slash().layer(routes::app().await);
 
@@ -26,6 +27,7 @@ async fn start_main_server() {
         .unwrap();
 }
 
+// Start the metrics server
 async fn start_metrics_server() {
     let app = NormalizePathLayer::trim_trailing_slash().layer(metrics::app().await);
 
@@ -56,18 +58,22 @@ github: https://github.com/axolotlmaid/files
 ───────────────────────────────────────────────────────────"#;
     println!("{}", startup_text);
 
+    // Start libraries
     dotenv().ok();
     tracing_subscriber::fmt()
         .with_target(false)
         .compact()
         .init();
 
+    // Create uploads directory
     fs::create_dir_all("uploads/").unwrap();
+    // Generate password
     password::init_password();
 
     let metrics_enabled =
         std::env::var("METRICS_ENABLED").unwrap_or_else(|_| "false".to_string()) == "true";
 
+    // If statement for starting the main server and metrics server if enabled
     if metrics_enabled {
         tokio::join!(start_main_server(), start_metrics_server());
     } else {

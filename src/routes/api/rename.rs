@@ -11,15 +11,19 @@ pub struct RenameFile {
     new_name: String,
 }
 
+// Handler for `/api/rename`
 pub async fn handler(
     result: Result<Json<RenameFile>, JsonRejection>,
 ) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
+    // Checks that JSON body is there / correct
     match result {
         Ok(Json(payload)) => {
+            // Get file paths
             let uploads = PathBuf::from("uploads");
             let file = uploads.join(&payload.name);
             let new_file = uploads.join(&payload.new_name);
 
+            // Rename file
             match fs::rename(file, new_file).await {
                 Ok(_) => Ok(Json(json!({ "success": true }))),
                 Err(_) => Err((

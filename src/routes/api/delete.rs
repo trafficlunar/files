@@ -10,13 +10,17 @@ pub struct DeleteFile {
     name: String,
 }
 
+// Handler for `/api/delete`
 pub async fn handler(
     result: Result<Json<DeleteFile>, JsonRejection>,
 ) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
+    // Checks that JSON body is there / correct
     match result {
         Ok(Json(payload)) => {
+            // Get file
             let file = PathBuf::from("uploads").join(&payload.name);
 
+            // Delete file
             match fs::remove_file(file).await {
                 Ok(_) => Ok(Json(json!({ "success": true }))),
                 Err(_) => Err((
