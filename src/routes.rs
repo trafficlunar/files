@@ -59,7 +59,7 @@ pub async fn app() -> Router {
         .nest(
             "/uploads",
             Router::new()
-                .route("/", get(files::directory::handler))
+                .route("/", get(files::directory::handler).post(files::directory::login_form))
                 .route("/:filename", get(files::preview::handler))
                 .route("/:filename/raw", get(files::raw::handler))
                 .route("/:filename/info", get(files::info::handler)),

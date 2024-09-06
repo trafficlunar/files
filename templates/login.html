@@ -1,0 +1,136 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>login — {{ page_title }}</title>
+
+        <meta name="title" content="login — {{ page_title }}" />
+        <meta name="theme-color" content="#ffa6c1" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+            rel="stylesheet"
+        />
+
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                height: 100%;
+                margin: 0;
+                overflow-x: hidden;
+
+                background-color: #181825;
+                color: #ffa6c1;
+
+                font-family: "JetBrains Mono", monospace;
+            }
+
+            #container {
+                width: 20rem;
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+            }
+
+            #face {
+                font-size: 3rem;
+                font-weight: 900;
+            }
+
+            #login {
+                font-size: 1.5rem;
+                font-weight: 900;
+            }
+
+            hr {
+                border: none;
+                border-bottom: 2px solid #ffa6c1;
+                width: 100%;
+                margin: 1rem 0;
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                width: 15rem;
+            }
+
+            #password-container {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            label {
+                margin-bottom: 4px;
+                font-weight: 500;
+            }
+
+            input {
+                background-color: #181825;
+                color: #ffa6c1;
+
+                padding: 0.25rem;
+
+                outline: none;
+                border: 1px solid #ffa6c180;
+                border-radius: 4px;
+
+                font-family: "JetBrains Mono", monospace;
+            }
+
+            button[type="submit"] {
+                padding: 0.25rem;
+                width: 5rem;
+
+                background-color: #ffa6c1;
+
+                outline: none;
+                border: none;
+                border-radius: 2px;
+
+                margin-top: 0.5rem;
+                font-family: "JetBrains Mono", monospace;
+                cursor: pointer;
+
+                transition: 300ms;
+                transition-property: filter transform;
+            }
+
+            button[type="submit"]:hover {
+                filter: brightness(75%);
+            }
+
+            button[type="submit"]:active {
+                transform: scale(0.9);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <span id="face">( ･ω･)ﾉ</span>
+            <span id="login">login</span>
+
+            <hr />
+
+            <form method="post">
+                <div id="password-container">
+                    <label for="password">password:</label>
+                    <input type="password" name="password" />
+                </div>
+
+                <button type="submit">enter</button>
+            </form>
+        </div>
+    </body>
+</html>
