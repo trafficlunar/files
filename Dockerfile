@@ -20,6 +20,8 @@ COPY --from=builder /app/target/release/files /usr/local/bin
 COPY favicon.ico /app/favicon.ico
 
 ENV PORT=3000
+ENV METRICS_PORT=3001
 EXPOSE 3000
+EXPOSE 3001
 
 ENTRYPOINT ["/usr/local/bin/files"]
