@@ -6,17 +6,21 @@
         <title>{{ file }} — {{ page_title }}</title>
 
         <meta name="title" content="{{ file }} — {{ page_title }}" />
-        <meta property="og:image" content="/uploads/{{ file }}/raw">
-        <meta property="og:image:type" content="image/png">
-        <meta property="og:image:width" content="250">
-        <meta property="og:image:height" content="250">
-        <meta name="theme-color" content="#ffa6c1">
+        <meta property="og:image" content="/uploads/{{ file }}/raw" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="250" />
+        <meta property="og:image:height" content="250" />
+        <meta name="theme-color" content="#ffa6c1" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
             href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
             rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
 
         <link
@@ -54,7 +58,7 @@
                 align-items: center;
 
                 padding: 0.5rem 1rem;
-                border-bottom: 2px solid #ff87ab;
+                border-bottom: 2px solid #ffa6c1;
 
                 background-color: #1e1e2e;
             }
@@ -155,6 +159,10 @@
                 font-family: "JetBrains Mono", monospace;
             }
 
+            canvas {
+                cursor: grab;
+            }
+
             #error {
                 display: none;
                 flex-direction: column;
@@ -170,8 +178,56 @@
                 font-weight: 900;
             }
 
+            #zoom {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+
+                position: fixed;
+                left: 1rem;
+                bottom: 1rem;
+
+                background-color: #1e1e2e;
+                border: 2px solid #ffa6c1;
+                border-radius: 4px;
+                padding: 0.1rem;
+            }
+
+            #scale {
+                font-size: 0.875rem;
+            }
+
+            #zoom button {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                background-color: transparent;
+                color: #ffa6c1;
+
+                outline: none;
+                border: none;
+
+                cursor: pointer;
+            }
+
+            #zoom button span {
+                font-size: 1.4rem;
+
+                transition: 200ms;
+                transition-property: filter transform;
+            }
+
+            #zoom button span:hover {
+                filter: brightness(75%);
+            }
+
+            #zoom button span:active {
+                transform: scale(0.8);
+            }
+
             @media only screen and (max-width: 1000px) {
-                 body {
+                body {
                     grid-template-rows: 7.5rem auto;
                 }
 
@@ -180,7 +236,7 @@
                     align-items: start;
                     padding-right: 0;
                 }
-                
+
                 #right {
                     justify-content: start;
                 }
@@ -201,7 +257,9 @@
 
                 <div id="links">
                     <a href="/uploads/{{ file }}/raw">Raw</a>
-                    <a href="/uploads/{{ file }}/raw" download="{{ file }}">Download</a>
+                    <a href="/uploads/{{ file }}/raw" download="{{ file }}"
+                        >Download</a
+                    >
                 </div>
             </div>
         </header>
@@ -210,6 +268,18 @@
             <div id="error">
                 <span>File could not be displayed</span>
                 <span>(✖╭╮✖)</span>
+            </div>
+
+            <div id="zoom">
+                <button id="minus-scale">
+                    <span class="material-symbols-outlined">remove</span>
+                </button>
+
+                <span id="scale">100%</span>
+
+                <button id="add-scale">
+                    <span class="material-symbols-outlined">add</span>
+                </button>
             </div>
         </main>
 
@@ -222,11 +292,117 @@
 
             switch (fileType) {
                 case "image":
-                    const imageElement = document.createElement("img");
-                    imageElement.src = "/uploads/{{ file }}/raw";
-                    imageElement.alt = "{{ file }}";
+                    const scaleText = document.getElementById("scale");
+                    const addScaleButton = document.getElementById("add-scale");
+                    const minusScaleButton = document.getElementById("minus-scale");
 
-                    mainElement.append(imageElement);
+                    const canvas = document.createElement("canvas");
+                    canvas.width = mainElement.clientWidth;
+                    canvas.height = mainElement.clientHeight;
+
+                    const ctx = canvas.getContext("2d");
+
+                    let dragging = false;
+                    let scale = 100;
+
+                    let startX = 0;
+                    let startY = 0;
+                    let offsetX = 0;
+                    let offsetY = 0;
+
+                    // Add image
+                    const image = new Image();
+                    image.addEventListener("load", () => {
+                        offsetX = (canvas.width - image.width * scale / 100) / 2;
+                        offsetY = (canvas.height - image.height * scale / 100) / 2;
+                        draw();
+                    });
+                    image.src = "/uploads/{{ file }}/raw";
+
+                    function draw() {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.save();
+                        ctx.translate(offsetX, offsetY);
+
+                        ctx.drawImage(
+                            image,
+                            0,
+                            0,
+                            (image.width * scale) / 100,
+                            (image.height * scale) / 100
+                        );
+                        scaleText.innerText = `${scale}%`;
+
+                        ctx.restore();
+                    }
+
+                    window.addEventListener("resize", () => {
+                        canvas.width = mainElement.clientWidth;
+                        canvas.height = mainElement.clientHeight;
+                        draw();
+                    });
+
+                    canvas.addEventListener("mousedown", (event) => {
+                        dragging = true;
+                        startX = event.offsetX - offsetX;
+                        startY = event.offsetY - offsetY;
+
+                        canvas.style.cursor = "grabbing";
+                    });
+
+                    canvas.addEventListener("mousemove", (event) => {
+                        if (dragging) {
+                            offsetX = event.offsetX - startX;
+                            offsetY = event.offsetY - startY;
+                            draw();
+                        }
+                    });
+
+                    canvas.addEventListener("wheel", (event) => {
+                        event.preventDefault();
+
+                        const mouseX = event.clientX - canvas.getBoundingClientRect().left;
+                        const mouseY = event.clientY - canvas.getBoundingClientRect().top;
+
+                        // Get the current scale and new scale
+                        const oldScale = scale;
+                        scale += event.deltaY * -0.1; // Add the scroll to the scale
+                        scale = Math.ceil(Math.min(Math.max(scale, 1), 10000)); // Set min and max to 1 and 10000
+
+                        // Calculate the zoom factor
+                        const zoomFactor = scale / oldScale;
+
+                        // Adjust the offsetX and offsetY to ensure the zoom is centered at the mouse position
+                        offsetX = mouseX - zoomFactor * (mouseX - offsetX);
+                        offsetY = mouseY - zoomFactor * (mouseY - offsetY);
+
+                        draw();
+                    });
+
+                    canvas.addEventListener("mouseup", () => {
+                        dragging = false;
+                        canvas.style.cursor = "grab";
+                    });
+
+                    canvas.addEventListener("mouseout", () => {
+                        dragging = false;
+                    });
+
+                    addScaleButton.addEventListener("click", () => {
+                        if (scale <= 10000) {
+                            scale += 10;
+                            draw();
+                        }
+                    });
+
+                    minusScaleButton.addEventListener("click", () => {
+                        if (scale >= 1) {
+                            scale -= 10;
+                            draw();
+                        }
+                    });
+
+                    mainElement.append(canvas);
                     break;
                 case "video":
                     const videoElement = document.createElement("video");
