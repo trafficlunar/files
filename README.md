@@ -1,7 +1,7 @@
 ![thumbnail](images/thumbnail.png)
 
 # files
-The code for my files server made in Rust hosted at https://files.axolotlmaid.com
+The code for my Rust-powered file server at https://files.axolotlmaid.com - customizable and open for anyone to use.
 
 ## contents
 - [features](#features)
