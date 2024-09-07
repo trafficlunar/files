@@ -9,10 +9,13 @@
         <meta name="theme-color" content="#ffa6c1" />
 
         <meta property="og:video" content="/uploads/{{ file }}/raw" />
+        <meta property="og:video:type" content="{{ mime_type }}" />
 
         <meta name='twitter:title' content="{{ file }} — {{ page_title }}" />
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name='twitter:player' content="/uploads/{{ file }}/raw" />
+        <meta property="twitter:card" content="player" />
+        <meta name='twitter:image' content="0" />
+        <meta name='twitter:player:stream' content="/uploads/{{ file }}/raw" />
+        <meta name='twitter:player:stream:content_type' content="{{ mime_type }}" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
