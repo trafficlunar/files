@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ file }} — {{ page_title }}</title>
+
+        <meta name="title" content="{{ file }} — {{ page_title }}" />
+        <meta name="theme-color" content="#ffa6c1" />
+        <meta name='twitter:title' content="{{ file }} — {{ page_title }}" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        />
+
+        <link rel="stylesheet" href="/style.css">
+
+        <style>
+            body {
+                display: grid;
+                grid-template-rows: 5rem auto;
+            }
+
+            main {
+                flex-direction: column;
+                gap: 4px;
+                font-size: 1.5rem;
+            }
+
+            main span:last-child {
+                font-size: 3rem;
+                font-weight: 900;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div id="left">
+                <span id="file-name">{{ file }}</span>
+                <span id="file-modified">Modified: {{ file_modified }}</span>
+            </div>
+
+            <div id="right">
+                <div id="file-size">{{ file_size }}</div>
+
+                <div id="seperator"></div>
+
+                <div id="links">
+                    <a id="copy" class="tooltip" data-tooltip="Copy Link" role="button" tabindex="0">
+                        <span class="material-symbols-outlined">link</span>
+                    </a>
+                    <a id="raw" class="tooltip" data-tooltip="View Raw File" href="/uploads/{{ file }}/raw">
+                        <span class="material-symbols-outlined">description</span>
+                    </a>
+                    <a id="download" class="tooltip" data-tooltip="Download" href="/uploads/{{ file }}/raw" download="{{ file }}">
+                        <span class="material-symbols-outlined">download</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <span>File could not be displayed</span>
+            <span>(✖╭╮✖)</span>
+        </main>
+
+        <script type="module">
+            const mainElement = document.querySelector("main");
+            const copyButton = document.getElementById("copy");
+
+            copyButton.addEventListener("click", () => {
+                navigator.clipboard.writeText(window.location.href);
+            });
+        </script>
+    </body>
+</html>

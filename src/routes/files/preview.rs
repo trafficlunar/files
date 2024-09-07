@@ -1,19 +1,58 @@
 use std::{fs, os::unix::fs::MetadataExt, path::PathBuf};
 
-use askama::Template;
+use askama::{DynTemplate, Template};
 use axum::{extract::Path, http::StatusCode, response::Html};
 use chrono::{DateTime, Local, Utc};
 
 #[path = "../error.rs"]
 mod error;
 
+// CAUTION
+// DEADLY CODE AHEAD
+
 #[derive(Template)]
-#[template(path = "preview.html")]
-struct PreviewTemplate<'a> {
+#[template(path = "previews/file.html")]
+struct PreviewFileTemplate<'a> {
+    file: &'a str,
+    file_modified: &'a str,
+    file_size: &'a str,
+    page_title: &'a str,
+}
+
+#[derive(Template)]
+#[template(path = "previews/text.html")]
+struct PreviewTextTemplate<'a> {
+    file: &'a str,
+    file_modified: &'a str,
+    file_size: &'a str,
+    page_title: &'a str,
+}
+
+#[derive(Template)]
+#[template(path = "previews/image.html")]
+struct PreviewImageTemplate<'a> {
     file: &'a str,
     file_modified: &'a str,
     file_size: &'a str,
     mime_type: &'a str,
+    page_title: &'a str,
+}
+
+#[derive(Template)]
+#[template(path = "previews/video.html")]
+struct PreviewVideoTemplate<'a> {
+    file: &'a str,
+    file_modified: &'a str,
+    file_size: &'a str,
+    page_title: &'a str,
+}
+
+#[derive(Template)]
+#[template(path = "previews/audio.html")]
+struct PreviewAudioTemplate<'a> {
+    file: &'a str,
+    file_modified: &'a str,
+    file_size: &'a str,
     page_title: &'a str,
 }
 
@@ -72,16 +111,44 @@ pub async fn handler(
         }
     };
 
-    // Render template
-    let template = PreviewTemplate {
-        file: &filename,
-        file_modified: &modified_time,
-        file_size: &size_formatted,
-        mime_type,
-        page_title: &page_title,
+    let mime_type_main = mime_type.split('/').next().unwrap_or("unknown");
+
+    // Render template(s)
+    let template: Box<dyn DynTemplate> = match mime_type_main {
+        "text" => Box::new(PreviewTextTemplate {
+            file: &filename,
+            file_modified: &modified_time,
+            file_size: &size_formatted,
+            page_title: &page_title,
+        }),
+        "image" => Box::new(PreviewImageTemplate {
+            file: &filename,
+            file_modified: &modified_time,
+            file_size: &size_formatted,
+            mime_type,
+            page_title: &page_title,
+        }),
+        "video" => Box::new(PreviewVideoTemplate {
+            file: &filename,
+            file_modified: &modified_time,
+            file_size: &size_formatted,
+            page_title: &page_title,
+        }),
+        "audio" => Box::new(PreviewAudioTemplate {
+            file: &filename,
+            file_modified: &modified_time,
+            file_size: &size_formatted,
+            page_title: &page_title,
+        }),
+        _ => Box::new(PreviewFileTemplate {
+            file: &filename,
+            file_modified: &modified_time,
+            file_size: &size_formatted,
+            page_title: &page_title,
+        }),
     };
 
-    template.render().map(Html).map_err(|_| {
+    template.dyn_render().map(Html).map_err(|_| {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
             error::render_error(&formatted_url, "Error rendering template"),
