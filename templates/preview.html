@@ -190,11 +190,12 @@
                 background-color: #1e1e2e;
                 border: 2px solid #ffa6c1;
                 border-radius: 4px;
-                padding: 0.1rem;
+                padding: 0.25rem;
             }
 
             #scale {
                 font-size: 0.875rem;
+                font-weight: 700;
             }
 
             #zoom button {
@@ -294,7 +295,8 @@
                 case "image":
                     const scaleText = document.getElementById("scale");
                     const addScaleButton = document.getElementById("add-scale");
-                    const minusScaleButton = document.getElementById("minus-scale");
+                    const minusScaleButton =
+                        document.getElementById("minus-scale");
 
                     const canvas = document.createElement("canvas");
                     canvas.width = mainElement.clientWidth;
@@ -313,8 +315,7 @@
                     // Add image
                     const image = new Image();
                     image.addEventListener("load", () => {
-                        offsetX = (canvas.width - image.width * scale / 100) / 2;
-                        offsetY = (canvas.height - image.height * scale / 100) / 2;
+                        centerImage();
                         draw();
                     });
                     image.src = "/uploads/{{ file }}/raw";
@@ -334,6 +335,13 @@
                         scaleText.innerText = `${scale}%`;
 
                         ctx.restore();
+                    }
+
+                    function centerImage() {
+                        offsetX =
+                            (canvas.width - (image.width * scale) / 100) / 2;
+                        offsetY =
+                            (canvas.height - (image.height * scale) / 100) / 2;
                     }
 
                     window.addEventListener("resize", () => {
@@ -361,8 +369,10 @@
                     canvas.addEventListener("wheel", (event) => {
                         event.preventDefault();
 
-                        const mouseX = event.clientX - canvas.getBoundingClientRect().left;
-                        const mouseY = event.clientY - canvas.getBoundingClientRect().top;
+                        const mouseX =
+                            event.clientX - canvas.getBoundingClientRect().left;
+                        const mouseY =
+                            event.clientY - canvas.getBoundingClientRect().top;
 
                         // Get the current scale and new scale
                         const oldScale = scale;
@@ -391,6 +401,7 @@
                     addScaleButton.addEventListener("click", () => {
                         if (scale <= 10000) {
                             scale += 10;
+                            centerImage();
                             draw();
                         }
                     });
@@ -398,6 +409,7 @@
                     minusScaleButton.addEventListener("click", () => {
                         if (scale >= 1) {
                             scale -= 10;
+                            centerImage();
                             draw();
                         }
                     });
