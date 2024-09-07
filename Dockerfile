@@ -18,6 +18,7 @@ WORKDIR /app
 COPY --from=builder /app/target/release/files /usr/local/bin
 
 COPY favicon.ico /app/favicon.ico
+COPY style.css /app/style.css
 
 ENV PORT=3000
 ENV METRICS_PORT=3001
