@@ -15,30 +15,18 @@
             rel="stylesheet"
         />
 
+        <link rel="stylesheet" href="/style.css">
+
         <style>
             body {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-
-                min-height: 100vh;
-                margin: 0;
-                overflow-x: hidden;
-
-                background-color: #181825;
-                color: #ffa6c1;
-
-                font-family: "JetBrains Mono", monospace;
             }
 
             #container {
                 width: 20rem;
-
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 4px;
             }
 
             #face {
@@ -52,9 +40,6 @@
             }
 
             hr {
-                border: none;
-                border-bottom: 2px solid #ffa6c1;
-                width: 100%;
                 margin: 1rem 0;
             }
 
@@ -78,16 +63,7 @@
             }
 
             input {
-                background-color: #181825;
-                color: #ffa6c1;
-
                 padding: 0.25rem;
-
-                outline: none;
-                border: 1px solid #ffa6c180;
-                border-radius: 4px;
-
-                font-family: "JetBrains Mono", monospace;
             }
 
             button[type="submit"] {
@@ -95,25 +71,10 @@
                 width: 5rem;
 
                 background-color: #ffa6c1;
+                color: #181825;
 
-                outline: none;
-                border: none;
                 border-radius: 2px;
-
                 margin-top: 0.5rem;
-                font-family: "JetBrains Mono", monospace;
-                cursor: pointer;
-
-                transition: 300ms;
-                transition-property: filter transform;
-            }
-
-            button[type="submit"]:hover {
-                filter: brightness(75%);
-            }
-
-            button[type="submit"]:active {
-                transform: scale(0.9);
             }
 
             #page-title {

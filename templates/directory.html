@@ -12,28 +12,12 @@
             rel="stylesheet"
         />
 
+        <link rel="stylesheet" href="/style.css">
+
         <style>
             body {
                 display: flex;
                 justify-content: center;
-
-                min-height: 100vh;
-                margin: 0;
-                overflow-x: hidden;
-
-                background-color: #181825;
-                color: #ffa6c1;
-
-                font-family: "JetBrains Mono", monospace;
-            }
-
-            #container {
-                width: 50rem;
-
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 4px;
             }
 
             #page-title {
@@ -42,17 +26,21 @@
                 font-weight: 900;
             }
 
-            hr {
-                border: none;
-                border-bottom: 2px solid #ffa6c1;
-                width: 100%;
-            }
-
             #search-bar,
             .file {
                 width: calc(100% - 1rem);
                 padding: 0.5rem;
-                
+            }
+
+            #search-bar {
+                margin-bottom: 0.5rem;
+            }
+
+            .file {
+                display: flex;
+                justify-content: space-between;
+                box-sizing: border-box;
+
                 color: #ffa6c1;
                 background-color: #1e1e2e;
 
@@ -61,53 +49,13 @@
                 outline: none;
             }
 
-            #search-bar {
-                margin-bottom: 0.5rem;
-                font-family: "JetBrains Mono", monospace;
-            }
-
-            .file {
-                display: flex;
-                justify-content: space-between;
-                box-sizing: border-box;
-            }
-
-            .file-name {
-                color: #ffa6c1;
-                text-decoration: none;
-                font-weight: 600;
+            .file-name:hover {
+                filter: brightness(75%);
             }
 
             .buttons {
                 display: flex;
                 gap: 4px;
-            }
-
-            button {
-                color: #ffa6c1;
-                font-family: "JetBrains Mono", monospace;
-
-                background-color: transparent;
-                border: none;
-                outline: none;
-
-                cursor: pointer;
-            }
-
-            .file-name,
-            button {
-                transition: 200ms;
-                transition-property: filter transform;
-            }
-
-            .file-name:hover,
-            button:hover {
-                filter: brightness(75%);
-            }
-
-            .file-name:active,
-            button:active {
-                transform: scale(0.8);
             }
         </style>
     </head>

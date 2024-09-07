@@ -58,6 +58,7 @@ pub async fn app() -> Router {
             get(|| async { Redirect::permanent("https://github.com/axolotlmaid/files/") }),
         )
         .route_service("/favicon.ico", ServeFile::new("favicon.ico"))
+        .route_service("/style.css", ServeFile::new("style.css"))
         .nest("/api", api_router)
         .nest(
             "/uploads",
