@@ -115,6 +115,14 @@
             button[type="submit"]:active {
                 transform: scale(0.9);
             }
+
+            #page-title {
+                position: absolute;
+                bottom: 1rem;
+
+                font-size: 0.875rem;
+                color: #ffa6c162;
+            }
         </style>
     </head>
     <body>
@@ -133,5 +141,7 @@
                 <button type="submit">enter</button>
             </form>
         </div>
+
+        <span id="page-title">{{ page_title }}</span>
     </body>
 </html>
