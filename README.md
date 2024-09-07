@@ -1,10 +1,21 @@
+![thumbnail](images/thumbnail.png)
+
 # files
 The code for my files server made in Rust hosted at https://files.axolotlmaid.com
 
 ## contents
 - [features](#features)
+- [demo](#demo)
 - [how to use](#how-to-use)
+    - [uploading](#uploading)
+    - [deleting](#deleting)
+    - [renaming](#renaming)
+    - [view all uploads](#view-all-uploads-directory)
+    - [previewing files](#previewing-files)
+    - [viewing information of a file](#viewing-information-of-a-file)
 - [installing](#installing)
+    - [docker](#docker-recommended)
+    - [manually](#manually)
 
 ## features
 - Show contents / previews of files uploaded
@@ -15,6 +26,14 @@ The code for my files server made in Rust hosted at https://files.axolotlmaid.co
 - Generate password with specified length on start up for more security
 - Option to generate filenames and its length
 - Metrics for Prometheus and Grafana
+
+## demo
+See it in usage at these links:
+
+- https://files.axolotlmaid.com/uploads/preview.rs
+- https://files.axolotlmaid.com/uploads/bliss.png
+
+You can also view the gallery by going [here](https://github.com/axolotlmaid/files/tree/master/images).
 
 ## how to use
 ### uploading
@@ -42,7 +61,7 @@ To view all the uploads (also known as the directory), go to `/uploads` and ente
 
 There is also an option to do this in JSON form, to do this, create a GET request to `/api/uploads` which will return every file uploaded in a JSON string array. The `Authorization` header may be required if `PROTECT_DIRECTORY` is enabled in .env.
 
-### viewing files
+### previewing files
 There is two ways to view a specific file - you can either go to the URL with all the fancy styling which is `/uploads/file_name_here` or go to the same URL but with `/raw` and only the file itself at the end like `/uploads/file_name_here/raw`
 
 ### viewing information of a file
