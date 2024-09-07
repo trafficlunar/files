@@ -8,10 +8,10 @@ The code for my files server made in Rust hosted at https://files.axolotlmaid.co
 
 ## features
 - Show contents / previews of files uploaded
-- Highlighted uploaded code with highlight.js
-- Uploading, deleting, and renaming with authorization
+- Highlighted code in preview with highlight.js
+- Image viewer with zooming and panning
+- Uploading, deleting, renaming, directory of uploads with optional authorization
 - View information of a specific file in JSON form
-- Directory of uploads with optional authorization
 - Generate password with specified length on start up for more security
 - Option to generate filenames and its length
 - Metrics for Prometheus and Grafana
