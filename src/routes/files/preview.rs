@@ -2,7 +2,7 @@ use std::{fs, os::unix::fs::MetadataExt, path::PathBuf};
 
 use askama::Template;
 use axum::{extract::Path, http::StatusCode, response::Html};
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Local, Utc};
 
 #[path = "../error.rs"]
 mod error;
@@ -39,7 +39,8 @@ pub async fn handler(
         .modified()
         .map(|time| {
             DateTime::<Local>::from(time)
-                .format("%Y-%m-%d at %H:%M:%S")
+                .with_timezone(&Utc)
+                .format("%Y-%m-%d at %H:%M:%S UTC")
                 .to_string()
         })
         .map_err(|_| {
