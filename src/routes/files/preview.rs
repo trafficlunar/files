@@ -44,6 +44,7 @@ struct PreviewVideoTemplate<'a> {
     file: &'a str,
     file_modified: &'a str,
     file_size: &'a str,
+    mime_type: &'a str,
     page_title: &'a str,
 }
 
@@ -53,6 +54,7 @@ struct PreviewAudioTemplate<'a> {
     file: &'a str,
     file_modified: &'a str,
     file_size: &'a str,
+    mime_type: &'a str,
     page_title: &'a str,
 }
 
@@ -103,15 +105,10 @@ pub async fn handler(
     // Guess mime type of file
     let mime_type = match mime_guess::from_path(&file_path).first_raw() {
         Some(mime) => mime,
-        None => {
-            return Err((
-                StatusCode::INTERNAL_SERVER_ERROR,
-                error::render_error(&formatted_url, "Error occurred while getting the MIME type"),
-            ))
-        }
+        None => "text/plain"
     };
 
-    let mime_type_main = mime_type.split('/').next().unwrap_or("unknown");
+    let mime_type_main = mime_type.split('/').next().unwrap();
 
     // Render template(s)
     let template: Box<dyn DynTemplate> = match mime_type_main {
@@ -132,12 +129,14 @@ pub async fn handler(
             file: &filename,
             file_modified: &modified_time,
             file_size: &size_formatted,
+            mime_type,
             page_title: &page_title,
         }),
         "audio" => Box::new(PreviewAudioTemplate {
             file: &filename,
             file_modified: &modified_time,
             file_size: &size_formatted,
+            mime_type,
             page_title: &page_title,
         }),
         _ => Box::new(PreviewFileTemplate {

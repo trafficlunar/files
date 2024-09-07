@@ -23,12 +23,7 @@ pub async fn handler(Path(filename): Path<String>) -> impl IntoResponse {
     // Guess mime type of file
     let content_type = match mime_guess::from_path(&file_path).first_raw() {
         Some(mime) => mime,
-        None => {
-            return Err((
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "MIME type could not be determined",
-            ))
-        }
+        None => "text/plain"
     };
 
     // Send file as response
