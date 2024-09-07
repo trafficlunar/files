@@ -103,29 +103,71 @@
             #links {
                 display: flex;
                 align-items: center;
-                gap: 24px;
-
                 margin-right: 1rem;
             }
 
             #links a {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                width: 2.5rem;
+                height: 2.5rem;
+
+                font-size: 1.25rem;
+                font-weight: 500;
                 text-decoration: none;
                 color: #ffa6c1;
 
-                height: 100%;
-                font-size: 1.25rem;
-                font-weight: 500;
+                cursor: pointer;
+                user-select: none;
 
                 transition: 200ms;
                 transition-property: filter transform;
             }
 
-            #links a:hover {
-                filter: brightness(75%);
-            }
-
             #links a:active {
                 transform: scale(0.8);
+            }
+
+            .tooltip {
+                position: relative;
+            }
+
+            .tooltip::before {
+                min-width: 4rem;
+
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+
+                margin-top: 0.5rem;
+                padding: 0.25rem 0.35rem;
+
+                border: 1px solid #ffa6c180;
+                border-radius: 4px;
+
+                background-color: #1e1e2e;
+                color: #ffa6c1;
+
+                font-size: 0.85rem;
+                text-align: center;
+                text-wrap: nowrap;
+
+                content: attr(data-tooltip);
+
+                visibility: hidden;
+                opacity: 0;
+
+                /* transition: 300ms opacity; */
+            }
+
+            .tooltip:hover:before {
+                visibility: visible;
+                opacity: 1;
+
+                transition: 300ms opacity;
             }
 
             main {
@@ -257,10 +299,15 @@
                 <div id="seperator"></div>
 
                 <div id="links">
-                    <a href="/uploads/{{ file }}/raw">Raw</a>
-                    <a href="/uploads/{{ file }}/raw" download="{{ file }}"
-                        >Download</a
-                    >
+                    <a id="copy" class="tooltip" data-tooltip="Copy Link" role="button" tabindex="0">
+                        <span class="material-symbols-outlined">link</span>
+                    </a>
+                    <a id="raw" class="tooltip" data-tooltip="View Raw File" href="/uploads/{{ file }}/raw">
+                        <span class="material-symbols-outlined">description</span>
+                    </a>
+                    <a id="download" class="tooltip" data-tooltip="Download" href="/uploads/{{ file }}/raw" download="{{ file }}">
+                        <span class="material-symbols-outlined">download</span>
+                    </a>
                 </div>
             </div>
         </header>
@@ -290,6 +337,11 @@
 
             const mainElement = document.querySelector("main");
             const errorElement = document.querySelector("#error");
+            const copyButton = document.getElementById("copy");
+
+            copyButton.addEventListener("click", () => {
+                navigator.clipboard.writeText(window.location.href);
+            });
 
             switch (fileType) {
                 case "image":
