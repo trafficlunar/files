@@ -102,6 +102,7 @@ docker run -d \
     -e METRICS_ENABLED=true \
     -p 3000:3000 \
     -p 3001:3001 \
+    -v /path/to/uploads/:/app/uploads/ \
     --name files \
     files:latest
 ```
