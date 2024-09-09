@@ -20,6 +20,14 @@
                 display: flex;
                 justify-content: center;
             }
+            
+            a {
+                justify-content: initial;
+            }
+
+            a:hover {
+                filter: brightness(75%);
+            }
 
             #page-title {
                 margin: 0;
@@ -38,7 +46,8 @@
             }
 
             .file {
-                display: flex;
+                display: grid;
+                grid-template-columns: 10fr 1fr;
                 justify-content: space-between;
                 box-sizing: border-box;
 
@@ -48,22 +57,100 @@
                 border-radius: 4px;
                 border: 1px solid #ffa6c180;
                 outline: none;
-            }
 
-            .file-name:hover {
-                filter: brightness(75%);
+                word-wrap: break-word;
             }
 
             .buttons {
                 display: flex;
-                gap: 4px;
+                justify-content: end;
             }
+
+            {% if enable_actions %}
+                #upload-area {
+                    display: grid;
+                    grid-template-columns: 3fr 1fr;
+
+                    position: relative;
+                    width: 100%;
+                    height: 12rem;
+
+                    background-color: #1e1e2e;
+
+                    border-radius: 4px;
+                    border: 2px dashed #ffa6c180;
+                }
+
+                #file-upload-input {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+
+                    opacity: 0;
+                }
+
+                #drag-drop-upload {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+
+                    position: relative;
+                    
+                    border-left: 2px dashed #ffa6c180;
+                    user-select: none;
+                }
+
+                #files-uploaded {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.5rem;
+
+                    padding: 0.5rem 0;
+                    box-sizing: border-box;
+
+                    overflow-x: hidden;
+                    overflow-y: auto;
+                }
+
+                #files-uploaded-placeholder {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-weight: 500;
+                    height: 100%;
+                }
+            {% endif %}
         </style>
     </head>
     <body>
         <div id="container">
             <h1 id="page-title">{{ page_title }}</h1>
             <hr>
+
+            {% if enable_actions %}
+                <div id="upload-area">
+                    <div id="files-uploaded">
+                        <span id="files-uploaded-placeholder">files will show here...</span>
+                    </div>
+
+                    <div id="drag-drop-upload">
+                        <input type="file" name="file-upload-input" id="file-upload-input" multiple>
+
+                        <span class="material-symbols-outlined" style="font-size: 4rem;">upload</span>
+                        <span style="font-size: 1.5rem; font-weight: 900;">upload</span>
+                        <span>drop files here</span>
+                    </div>
+                </div>
+
+                <div class="buttons" style="gap: 4px;">
+                    <button id="upload-button" class="button tooltip" data-tooltip="Upload every file in the upload box">upload</button>
+                    <button id="delete-all-button" class="button tooltip" style="width: 6rem;" data-tooltip="Delete all files in the upload box">delete all</button>
+                </div>
+
+                <hr>
+            {% endif %}
 
             <input id="search-bar" type="text" placeholder="search..." />
 
@@ -102,6 +189,94 @@
             });
 
             {% if enable_actions %}
+                const fileUploadInput = document.getElementById("file-upload-input");
+                const uploadedFilesDiv = document.getElementById("files-uploaded");
+                const placeholder = document.getElementById("files-uploaded-placeholder");
+                const uploadButton = document.getElementById("upload-button");
+                const deleteAllButton = document.getElementById("delete-all-button");
+
+                let formData = new FormData();
+
+                uploadButton.addEventListener("click", () => {
+                    fetch("/api/upload", {
+                        method: "POST",
+                        headers: {
+                            Authorization: "{{ password|safe }}"
+                        },
+                        body: formData,
+                    })
+                        .then(() => location.reload())
+                        .catch((error) => console.log(error));
+                });
+
+                deleteAllButton.addEventListener("click", () => {
+                    // Delete every child except the placeholder
+                    while (uploadedFilesDiv.lastChild.id !== "files-uploaded-placeholder") {
+                        uploadedFilesDiv.removeChild(uploadedFilesDiv.lastChild);
+                    }
+
+                    placeholder.style.display = "flex";
+                    formData = new FormData();
+                });
+
+                fileUploadInput.addEventListener("change", () => {
+                    console.log(fileUploadInput.files);
+
+                    if (fileUploadInput.files) {
+                        placeholder.style.display = "none";
+                    }
+
+                    for (const file of fileUploadInput.files) {
+                        formData.append(file.name, file);
+
+                        const fileDiv = document.createElement("div");
+                        fileDiv.classList.add("file");
+
+                        const fileNameSpan = document.createElement("span");
+                        fileNameSpan.classList.add("file-name");
+                        fileNameSpan.innerText = file.name;
+
+                        fileDiv.appendChild(fileNameSpan);
+
+                        const buttonsDiv = document.createElement("div");
+                        buttonsDiv.classList.add("buttons");
+
+                        const renameButton = document.createElement("button");
+                        renameButton.classList.add("tooltip");
+                        renameButton.setAttribute("data-tooltip", "Rename");
+
+                        const renameButtonIcon = document.createElement("span");
+                        renameButtonIcon.classList.add("material-symbols-outlined");
+                        renameButtonIcon.innerText = "edit";
+
+                        renameButton.addEventListener("click", () => {
+                            // todo
+                        });
+
+                        renameButton.appendChild(renameButtonIcon);
+                        buttonsDiv.appendChild(renameButton);
+
+                        const deleteButton = document.createElement("button");
+                        deleteButton.classList.add("tooltip");
+                        deleteButton.setAttribute("data-tooltip", "Delete");
+
+                        const deleteButtonIcon = document.createElement("span");
+                        deleteButtonIcon.classList.add("material-symbols-outlined");
+                        deleteButtonIcon.innerText = "delete";
+
+                        deleteButton.addEventListener("click", () => {
+                            fileDiv.remove();
+                            formData.delete(file.name);
+                        });
+
+                        deleteButton.appendChild(deleteButtonIcon);
+                        buttonsDiv.appendChild(deleteButton);
+
+                        fileDiv.appendChild(buttonsDiv);
+                        uploadedFilesDiv.appendChild(fileDiv);
+                    }
+                });
+                
                 function renameFile(file) {
                     const newFile = prompt(`Type the new file name for '${file}'`);
 
@@ -115,9 +290,7 @@
                             body: JSON.stringify({ name: file, new_name: newFile }),
                         })
                             .then(() => location.reload())
-                            .catch((error) => {
-                                console.log(error);
-                            });
+                            .catch((error) => console.log(error));
                     }
                 }
 
@@ -132,9 +305,7 @@
                             body: JSON.stringify({ name: file }),
                         })
                             .then(() => location.reload())
-                            .catch((error) => {
-                                console.log(error);
-                            });
+                            .catch((error) => console.log(error));
                     }
                 }
             {% endif %}
