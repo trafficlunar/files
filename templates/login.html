@@ -25,24 +25,6 @@
                 align-items: center;
             }
 
-            #container {
-                width: 20rem;
-            }
-
-            #face {
-                font-size: 3rem;
-                font-weight: 900;
-            }
-
-            #login {
-                font-size: 1.5rem;
-                font-weight: 900;
-            }
-
-            hr {
-                margin: 1rem 0;
-            }
-
             form {
                 display: flex;
                 flex-direction: column;
@@ -66,17 +48,6 @@
                 padding: 0.25rem;
             }
 
-            button[type="submit"] {
-                padding: 0.25rem;
-                width: 5rem;
-
-                background-color: #ffa6c1;
-                color: #181825;
-
-                border-radius: 2px;
-                margin-top: 0.5rem;
-            }
-
             #page-title {
                 position: absolute;
                 bottom: 1rem;
@@ -87,11 +58,11 @@
         </style>
     </head>
     <body>
-        <div id="container">
-            <span id="face">( ･ω･)ﾉ</span>
-            <span id="login">login</span>
+        <div id="container" style="width: 20rem;">
+            <span style="font-size: 3rem; font-weight: 900;">( ･ω･)ﾉ</span>
+            <span style="font-size: 1.5rem; font-weight: 900;">login</span>
 
-            <hr />
+            <hr style="margin: 1rem 0;" />
 
             <form method="post">
                 <div id="password-container">
@@ -99,7 +70,7 @@
                     <input type="password" name="password" />
                 </div>
 
-                <button type="submit">enter</button>
+                <button type="submit" class="button">enter</button>
             </form>
         </div>
 

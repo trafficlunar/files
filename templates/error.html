@@ -31,20 +31,11 @@
                 font-weight: 900;
                 margin-bottom: 0.5rem;
             }
-
-            #error {
-                font-size: 2rem;
-                font-weight: 900;
-            }
-
-            #url {
-                font-weight: 500;
-            }
         </style>
     </head>
     <body>
         <span id="face">(✖╭╮✖)</span>
-        <span id="error">{{ error }}</span>
-        <span id="url">requested url: {{ url }}</span>
+        <span style="font-size: 2rem; font-weight: 900;">{{ error }}</span>
+        <span style="font-weight: 500;">requested url: {{ url }}</span>
     </body>
 </html>

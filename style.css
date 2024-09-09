@@ -24,7 +24,7 @@ a {
     font-weight: 600;
 
     cursor: pointer;
-    transition: 300ms;
+    transition: 200ms;
     transition-property: filter transform;
 }
 
@@ -56,6 +56,10 @@ input {
 }
 
 button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     color: #ffa6c1;
 
     background-color: transparent;
@@ -64,12 +68,12 @@ button {
 
     cursor: pointer;
 
-    transition: 300ms;
+    transition: 200ms;
     transition-property: filter transform;
 }
 
-button:hover {
-    filter: brightness(75%);
+button span {
+    font-size: 1.25rem !important;
 }
 
 button:active {
@@ -85,6 +89,17 @@ header {
     border-bottom: 2px solid #ffa6c1;
 
     background-color: #1e1e2e;
+}
+
+.button {
+    padding: 0.25rem;
+    width: 5rem;
+
+    background-color: #ffa6c1;
+    color: #181825;
+
+    border-radius: 2px;
+    margin-top: 0.5rem;
 }
 
 #container {
@@ -175,6 +190,7 @@ header {
     text-wrap: nowrap;
 
     content: attr(data-tooltip);
+    z-index: 10;
 
     visibility: hidden;
     opacity: 0;
