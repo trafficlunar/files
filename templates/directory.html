@@ -88,7 +88,7 @@
                 const value = event.target.value;
 
                 files.forEach((file) => {
-                    file.style.display = "revert";
+                    file.style.display = "flex";
 
                     if (!file.querySelector("a").innerText.includes(value)) {
                         file.style.display = "none";
