@@ -379,14 +379,10 @@
                         renameButtonIcon.innerText = "edit";
 
                         renameButton.addEventListener("click", () => {
-                            showModal("rename", file.name, (input, hideModal) => {
+                            showModal("rename", file.name, (input) => {
                                 formData.delete(file.name);
                                 formData.append(input.value, file, input.value);        // 3rd value changes the filename
                                 fileNameSpan.innerText = input.value;
-
-                                console.log(formData);
-
-                                hideModal();
                             });
                         });
 
@@ -449,6 +445,7 @@
                     // Set input to nothing so when opening the same modal again the input is empty
                     document.querySelectorAll(".modal input").forEach((input) => {
                         input.value = "";
+                        input.removeEventListener("keydown", input.onKeyDownHandler);
                     });
 
                     // Remove event listener to prevent duplicate events
@@ -486,6 +483,7 @@
                     const button = modal.querySelector("#ok-button");
 
                     fileName.innerText = file;
+                    input.focus();
 
                     let onClick = function() {
                         const apiURL = isDeleteModal ? "/api/delete" : "/api/rename";
@@ -507,18 +505,30 @@
 
                         // Remove event listener to avoid duplicate events
                         button.removeEventListener("click", onClick);
+                        hideModal();
                     }
 
                     // If there is a callback - set onClick to the callback to be used below
                     if (callback) {
                         onClick = () => {
-                            callback(input, hideModal);
+                            callback(input);
+                            hideModal();
                         };
                     }
 
                     // Used for removing event listener if user presses cancel
                     button.onClickHandler = onClick;
                     button.addEventListener("click", onClick);
+
+                    function onKeyDown(event) {
+                        if (event.key == "Enter") {
+                            onClick();
+                            input.removeEventListener("keydown", onKeyDown);
+                        }
+                    }
+
+                    input.onKeyDownHandler = onKeyDown;
+                    input.addEventListener("keydown", onKeyDown);
                 }
                 //#endregion
             {% endif %}
