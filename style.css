@@ -46,6 +46,11 @@ hr {
     width: 100%;
 }
 
+label {
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
 input {
     background-color: #1e1e2e;
     color: #ffa6c1;
@@ -205,7 +210,7 @@ header {
 
 @media only screen and (max-width: 1000px) {
     body {
-        grid-template-rows: 7.5rem auto;
+        grid-template-rows: 7.5rem auto !important;
     }
 
     header {
