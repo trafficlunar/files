@@ -22,7 +22,8 @@ The code for my Rust-powered file server at https://files.axolotlmaid.com - cust
 - Highlighted code in preview with highlight.js
 - Image viewer with zooming and panning
 - Uploading, deleting, renaming, directory of uploads with optional authorization
-- View information of a specific file in JSON form
+- Ability to manage and upload files from the directory of uploads
+- View information of a specific file and see uploads in JSON form
 - Generate password with specified length on start up for more security
 - Option to generate filenames and its length
 - Metrics for Prometheus and Grafana
