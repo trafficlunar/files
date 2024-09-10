@@ -79,6 +79,8 @@
 
                     border-radius: 4px;
                     border: 2px dashed #ffa6c180;
+
+                    user-select: none;
                 }
 
                 #file-upload-input {
@@ -98,8 +100,6 @@
                     position: relative;
                     
                     border-left: 2px dashed #ffa6c180;
-                    user-select: none;
-
                     transition: 300ms box-shadow;
                 }
 
@@ -129,15 +129,104 @@
 
                 #files-uploaded-placeholder {
                     display: flex;
+                    flex-direction: column;
                     justify-content: center;
                     align-items: center;
-                    font-weight: 500;
+                    gap: 4px;
+
                     height: 100%;
+                }
+
+                #modal-container {
+                    position: fixed;
+                    width: 100%;
+                    height: 100%;
+
+                    display: none;
+                    justify-content: center;
+
+                    padding-top: 3rem;
+                    backdrop-filter: brightness(75%);
+                    z-index: 100;
+
+                    opacity: 0;
+                }
+
+                .modal {
+                    display: none;
+                    flex-direction: column;
+
+                    width: 30rem;
+                    height: 12rem;
+                    padding: 1.5rem;
+
+                    background-color: #1e1e2e;
+                    border-radius: 4px;
+                    border: 1px solid #ffa6c180;
+
+                    transform: translateY(-50%);
+                }
+
+                .modal-title {
+                    font-size: 1.25rem;
+                    font-weight: 800;
+                }
+
+                #modal-file-name-text {
+                    font-weight: 600;
+                    margin-bottom: 4px;
+                }
+
+                #modal-file-name {
+                    font-weight: 300;
+                    margin-bottom: 1rem;
+                }
+
+                .modal input {
+                    padding: 0.25rem;
+                }
+
+                .modal .buttons {
+                    gap: 4px;
+                    margin-top: auto;
                 }
             {% endif %}
         </style>
     </head>
     <body>
+        <div id="modal-container">
+            <div id="rename-modal" class="modal">
+                <span class="modal-title">Rename file</span>
+                <hr>
+
+                <span id="modal-file-name-text">File name</span>
+                <span id="modal-file-name">frieren.png</span>
+
+                <label for="new-name">New file name</label>
+                <input type="text" name="new-name" placeholder="type the file name here...">
+
+                <div class="buttons">
+                    <button id="ok-button" class="button">ok</button>
+                    <button id="cancel-button" class="button" onclick="hideModal()">cancel</button>
+                </div>
+            </div>
+
+            <div id="delete-modal" class="modal">
+                <span class="modal-title">Delete file</span>
+                <hr>
+
+                <span id="modal-file-name-text">File name</span>
+                <span id="modal-file-name">frieren.png</span>
+
+                <span>Are you sure you want to delete this file? This is <b>irreversible</b>!</span>
+
+                <div class="buttons">
+                    <button id="ok-button" class="button">ok</button>
+                    <button id="cancel-button" class="button" onclick="hideModal()">cancel</button>
+                </div>
+            </div>
+        </div>
+
         <div id="container">
             <h1 id="page-title">{{ page_title }}</h1>
             <hr>
@@ -176,10 +265,10 @@
 
                     {% if enable_actions %}
                         <div class="buttons">
-                            <button onclick="renameFile('{{ file }}')" class="tooltip" data-tooltip="Rename">
+                            <button onclick="showModal('rename', '{{ file }}')" class="tooltip" data-tooltip="Rename">
                                 <span class="material-symbols-outlined">edit</span>
                             </button>
-                            <button onclick="deleteFile('{{ file }}')" class="tooltip" data-tooltip="Delete">
+                            <button onclick="showModal('delete', '{{ file }}')" class="tooltip" data-tooltip="Delete">
                                 <span class="material-symbols-outlined">delete</span>
                             </button>
                         </div>
@@ -188,6 +277,7 @@
             {% endfor %}
         </div>
 
+        <!-- I'm going to be honest - I think this code is pretty bad -->
         <script>
             const searchBar = document.getElementById("search-bar");
             const files = document.querySelectorAll(".file");
@@ -219,15 +309,17 @@
 
                 //#region buttons
                 uploadButton.addEventListener("click", () => {
-                    fetch("/api/upload", {
-                        method: "POST",
-                        headers: {
-                            Authorization: "{{ password|safe }}"
-                        },
-                        body: formData,
-                    })
-                        .then(() => location.reload())
-                        .catch((error) => console.log(error));
+                    if (formData.values.length >= 0) {
+                        fetch("/api/upload", {
+                            method: "POST",
+                            headers: {
+                                Authorization: "{{ password|safe }}"
+                            },
+                            body: formData,
+                        })
+                            .then(() => location.reload())
+                            .catch((error) => console.log(error));
+                    }
                 });
 
                 deleteAllButton.addEventListener("click", () => {
@@ -265,6 +357,7 @@
                     for (const file of fileUploadInput.files) {
                         formData.append(file.name, file);
 
+                        // Create elements in the to be uploaded div
                         const fileDiv = document.createElement("div");
                         fileDiv.classList.add("file");
 
@@ -286,7 +379,15 @@
                         renameButtonIcon.innerText = "edit";
 
                         renameButton.addEventListener("click", () => {
-                            // todo
+                            showModal("rename", file.name, (input, hideModal) => {
+                                formData.delete(file.name);
+                                formData.append(input.value, file, input.value);        // 3rd value changes the filename
+                                fileNameSpan.innerText = input.value;
+
+                                console.log(formData);
+
+                                hideModal();
+                            });
                         });
 
                         renameButton.appendChild(renameButtonIcon);
@@ -319,37 +420,105 @@
                 });
                 //#endregion
                 
-                //#region file list
-                function renameFile(file) {
-                    const newFile = prompt(`Type the new file name for '${file}'`);
+                //#region modals
+                const modalContainer = document.getElementById("modal-container");
 
-                    if (newFile) {
-                        fetch("/api/rename", {
-                            method: "PUT",
-                            headers: {
-                                Authorization: "{{ password|safe }}",
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({ name: file, new_name: newFile }),
-                        })
-                            .then(() => location.reload())
-                            .catch((error) => console.log(error));
-                    }
+                function hideModal() {
+                    const renameModal = document.getElementById("rename-modal");
+                    const deleteModal = document.getElementById("delete-modal");
+
+                    // Animations
+                    modalContainer.animate(
+                        { opacity: [1, 0] },
+                        { duration: 300, iterations: 1, easing: "ease-in" },
+                    ).finished.then(() => {
+                        modalContainer.style.opacity = 0;
+                        modalContainer.style.display = "none";
+                    });
+
+                    [renameModal, deleteModal].forEach((modal) => {
+                        modal.animate(
+                            { transform: ["translateY(0%)", "translateY(-50%)"] },
+                            { duration: 300, iterations: 1, easing: "cubic-bezier(0.11, 0, 0.5, 0)" },
+                        ).finished.then(() => {
+                            modal.style.transform = "translateY(-50%)";
+                            modal.style.display = "none";
+                        });
+                    });
+
+                    // Set input to nothing so when opening the same modal again the input is empty
+                    document.querySelectorAll(".modal input").forEach((input) => {
+                        input.value = "";
+                    });
+
+                    // Remove event listener to prevent duplicate events
+                    document.querySelectorAll("#ok-button").forEach((button) => {
+                        if (button.onClickHandler) {
+                            button.removeEventListener("click", button.onClickHandler);
+                        }
+                    });
                 }
 
-                function deleteFile(file) {
-                    if (confirm(`Delete '${file}'?`)) {
-                        fetch("/api/delete", {
-                            method: "DELETE",
+                function showModal(modalType, file, callback) {
+                    const isDeleteModal = modalType === "delete";
+                    const modal = document.getElementById(`${modalType}-modal`);
+
+                    modalContainer.style.display = "flex";
+                    modal.style.display = "flex";
+
+                    // Animations
+                    modalContainer.animate(
+                        { opacity: [0, 1] },
+                        { duration: 300, iterations: 1, easing: "ease-out" },
+                    ).finished.then(() => {
+                        modalContainer.style.opacity = 1;
+                    });
+
+                    modal.animate(
+                        { transform: ["translateY(-50%)", "translateY(0%)"] },
+                        { duration: 300, iterations: 1, easing: "cubic-bezier(0.25, 1, 0.5, 1)" },
+                    ).finished.then(() => {
+                        modal.style.transform = "translateY(0%)";
+                    });
+
+                    const fileName = modal.querySelector("#modal-file-name");
+                    const input = modal.querySelector("input");
+                    const button = modal.querySelector("#ok-button");
+
+                    fileName.innerText = file;
+
+                    let onClick = function() {
+                        const apiURL = isDeleteModal ? "/api/delete" : "/api/rename";
+                        const method = isDeleteModal ? "DELETE" : "PUT";
+
+                        fetch(apiURL, {
+                            method: method,
                             headers: {
                                 Authorization: "{{ password|safe }}",
                                 "Content-Type": "application/json",
                             },
-                            body: JSON.stringify({ name: file }),
+                            body: JSON.stringify({
+                                name: file,
+                                ...(isDeleteModal ? {} : { new_name: input.value })
+                            })
                         })
                             .then(() => location.reload())
                             .catch((error) => console.log(error));
+
+                        // Remove event listener to avoid duplicate events
+                        button.removeEventListener("click", onClick);
                     }
+
+                    // If there is a callback - set onClick to the callback to be used below
+                    if (callback) {
+                        onClick = () => {
+                            callback(input, hideModal);
+                        };
+                    }
+
+                    // Used for removing event listener if user presses cancel
+                    button.onClickHandler = onClick;
+                    button.addEventListener("click", onClick);
                 }
                 //#endregion
             {% endif %}
