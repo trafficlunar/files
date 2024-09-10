@@ -69,7 +69,7 @@
             {% if enable_actions %}
                 #upload-area {
                     display: grid;
-                    grid-template-columns: 3fr 1fr;
+                    grid-template-columns: 2.5fr 1fr;
 
                     position: relative;
                     width: 100%;
@@ -99,6 +99,19 @@
                     
                     border-left: 2px dashed #ffa6c180;
                     user-select: none;
+
+                    transition: 300ms box-shadow;
+                }
+
+                #drag-drop-title {
+                    font-size: 1.5rem;
+                    font-weight: 900;
+                }
+
+                #drag-drop-info {
+                    font-size: 0.875rem;
+                    text-align: center;
+                    color: #ffa6c199;
                 }
 
                 #files-uploaded {
@@ -132,15 +145,18 @@
             {% if enable_actions %}
                 <div id="upload-area">
                     <div id="files-uploaded">
-                        <span id="files-uploaded-placeholder">files will show here...</span>
+                        <div id="files-uploaded-placeholder">
+                            <span class="material-symbols-outlined" style="font-size: 2rem;">perm_media</span>
+                            <span style="font-weight: 500;">files will show here...</span>
+                        </div>
                     </div>
 
                     <div id="drag-drop-upload">
                         <input type="file" name="file-upload-input" id="file-upload-input" multiple>
 
                         <span class="material-symbols-outlined" style="font-size: 4rem;">upload</span>
-                        <span style="font-size: 1.5rem; font-weight: 900;">upload</span>
-                        <span>drop files here</span>
+                        <span id="drag-drop-title">upload</span>
+                        <span id="drag-drop-info">drag or select a file</span>
                     </div>
                 </div>
 
@@ -189,14 +205,19 @@
             });
 
             {% if enable_actions %}
+                const dragDropUploadDiv = document.getElementById("drag-drop-upload");
+                const dragDropTitle = document.getElementById("drag-drop-title");
                 const fileUploadInput = document.getElementById("file-upload-input");
+
                 const uploadedFilesDiv = document.getElementById("files-uploaded");
                 const placeholder = document.getElementById("files-uploaded-placeholder");
+
                 const uploadButton = document.getElementById("upload-button");
                 const deleteAllButton = document.getElementById("delete-all-button");
 
                 let formData = new FormData();
 
+                //#region buttons
                 uploadButton.addEventListener("click", () => {
                     fetch("/api/upload", {
                         method: "POST",
@@ -218,10 +239,25 @@
                     placeholder.style.display = "flex";
                     formData = new FormData();
                 });
+                //#endregion
 
+                //#region drag styles
+                fileUploadInput.addEventListener("dragenter", () => {
+                    dragDropUploadDiv.style.boxShadow = "0px 0px 50px 10px #ffa6c146";
+                    dragDropTitle.innerText = "drop it!";
+                });
+
+                function dragLeave() {
+                    dragDropUploadDiv.style.boxShadow = "";
+                    dragDropTitle.innerText = "upload";
+                }
+
+                fileUploadInput.addEventListener("dragleave", dragLeave);
+                fileUploadInput.addEventListener("drop", dragLeave);
+                //#endregion
+
+                //#region getting and showing to be uploaded files
                 fileUploadInput.addEventListener("change", () => {
-                    console.log(fileUploadInput.files);
-
                     if (fileUploadInput.files) {
                         placeholder.style.display = "none";
                     }
@@ -267,6 +303,11 @@
                         deleteButton.addEventListener("click", () => {
                             fileDiv.remove();
                             formData.delete(file.name);
+
+                            // Show placeholder if there is only 1 child (which is the placeholder)
+                            if (uploadedFilesDiv.children.length == 1) {
+                                placeholder.style.display = "flex";
+                            }
                         });
 
                         deleteButton.appendChild(deleteButtonIcon);
@@ -276,7 +317,9 @@
                         uploadedFilesDiv.appendChild(fileDiv);
                     }
                 });
+                //#endregion
                 
+                //#region file list
                 function renameFile(file) {
                     const newFile = prompt(`Type the new file name for '${file}'`);
 
@@ -308,6 +351,7 @@
                             .catch((error) => console.log(error));
                     }
                 }
+                //#endregion
             {% endif %}
         </script>
     </body>
