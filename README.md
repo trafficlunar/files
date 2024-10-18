@@ -87,20 +87,18 @@ To view information of a file (name, size, modified time, url), create a GET req
 
 ## installing
 ### docker (recommended)
-1. Clone the repository
+You can either build the image manually or pull it from ghcr.io.
+
 ```bash
-git clone https://github.com/trafficlunar/files
-cd files
+$ git clone https://github.com/trafficlunar/files
+$ cd files
+# (optional) change favicon.ico to whatever you want
+$ docker build -t files .
 ```
 
-2. (optional) Change the `favicon.ico` to whatever you want
-
-3. Build the Docker image
 ```bash
-docker build -t files .
+$ docker pull ghcr.io/trafficlunar/files:latest
 ```
-
-4. Run the Docker image
 
 > [!NOTE]
 > Read [.env.example](https://github.com/trafficlunar/files/blob/master/.env.example) for more information on these variables.
@@ -122,7 +120,7 @@ docker run -d \
     -p 3001:3001 \
     -v /path/to/uploads/:/app/uploads/ \
     --name files \
-    files:latest
+    ghcr.io/trafficlunar/files:latest # or files:latest
 ```
 
 ### manually
