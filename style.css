@@ -208,6 +208,36 @@ header {
     transition: 200ms opacity;
 }
 
+.video-js .vjs-control-bar,
+.video-js .vjs-big-play-button {
+    background-color: #1e1e2eb3 !important;
+    color: #ffa6c1;
+    border-color: #ffa6c180;
+}
+
+.video-js .vjs-big-play-button:focus, .video-js:hover .vjs-big-play-button {
+    border-color: #ffa6c1;
+}
+
+.vjs-button > .vjs-icon-placeholder::before {
+    font-size: 1.25rem;
+    line-height: 1.5;
+}
+
+.video-js .vjs-play-progress,
+.video-js .vjs-volume-level {
+    background-color: #ffa6c180;
+}
+
+.video-js .vjs-slider {
+    background: #ffa6c138;
+}
+
+.video-js .vjs-load-progress,
+.video-js .vjs-load-progress div {
+    background: transparent;
+}
+
 @media only screen and (max-width: 1000px) {
     body {
         grid-template-rows: 7.5rem auto !important;
