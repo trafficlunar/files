@@ -52,7 +52,7 @@ pub async fn handler(mut multipart: Multipart) -> Result<Json<Value>, (StatusCod
         // Cache json to later send as the response
         uploaded_files.push(json!({
             "name": name,
-            "url": format!("{}/uploads/{}/", &base_url, &name)
+            "url": format!("{}/{}/", &base_url, &name)
         }));
     }
 

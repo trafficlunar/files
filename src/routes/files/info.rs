@@ -37,7 +37,7 @@ pub async fn handler(
         "file": &filename,
         "modified": modified_time,
         "size": metadata.size(),
-        "url": format!("{}/uploads/{}/raw", &base_url, &filename),
-        "url_preview": format!("{}/uploads/{}", &base_url, &filename)
+        "url": format!("{}/{}/raw", &base_url, &filename),
+        "url_preview": format!("{}/{}", &base_url, &filename)
     })))
 }

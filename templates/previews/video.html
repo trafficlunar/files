@@ -9,13 +9,13 @@
         <meta name="theme-color" content="#ffa6c1" />
 
         <meta property="og:title" content="{{ file }} — {{ page_title }}" />
-        <meta property="og:video" content="/uploads/{{ file }}/raw" />
+        <meta property="og:video" content="/{{ file }}/raw" />
         <meta property="og:video:type" content="{{ mime_type }}" />
 
         <meta name='twitter:title' content="{{ file }} — {{ page_title }}" />
         <meta property="twitter:card" content="player" />
         <meta name='twitter:image' content="0" />
-        <meta name='twitter:player:stream' content="/uploads/{{ file }}/raw" />
+        <meta name='twitter:player:stream' content="/{{ file }}/raw" />
         <meta name='twitter:player:stream:content_type' content="{{ mime_type }}" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -56,10 +56,10 @@
                     <a id="copy" class="tooltip" data-tooltip="Copy Link" role="button" tabindex="0">
                         <span class="material-symbols-outlined">link</span>
                     </a>
-                    <a id="raw" class="tooltip" data-tooltip="View Raw File" href="/uploads/{{ file }}/raw">
+                    <a id="raw" class="tooltip" data-tooltip="View Raw File" href="/{{ file }}/raw">
                         <span class="material-symbols-outlined">description</span>
                     </a>
-                    <a id="download" class="tooltip" data-tooltip="Download" href="/uploads/{{ file }}/raw" download="{{ file }}">
+                    <a id="download" class="tooltip" data-tooltip="Download" href="/{{ file }}/raw" download="{{ file }}">
                         <span class="material-symbols-outlined">download</span>
                     </a>
                 </div>
@@ -67,7 +67,7 @@
         </header>
 
         <main>
-            <video src="/uploads/{{ file }}/raw" controls autoplay></video>
+            <video src="/{{ file }}/raw" controls autoplay></video>
         </main>
 
         <script type="module">

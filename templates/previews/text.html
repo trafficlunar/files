@@ -90,7 +90,7 @@
                         id="raw"
                         class="tooltip"
                         data-tooltip="View Raw File"
-                        href="/uploads/{{ file }}/raw"
+                        href="/{{ file }}/raw"
                     >
                         <span class="material-symbols-outlined"
                             >description</span
@@ -100,7 +100,7 @@
                         id="download"
                         class="tooltip"
                         data-tooltip="Download"
-                        href="/uploads/{{ file }}/raw"
+                        href="/{{ file }}/raw"
                         download="{{ file }}"
                     >
                         <span class="material-symbols-outlined">download</span>
@@ -122,7 +122,7 @@
             });
 
             const codeElement = document.querySelector("code");
-            const response = await fetch("/uploads/{{ file }}/raw");
+            const response = await fetch("/{{ file }}/raw");
             codeElement.textContent = await response.text();
 
             hljs.highlightAll();

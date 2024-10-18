@@ -28,7 +28,7 @@ pub struct LoginForm {
     password: String
 }
 
-// Handler for `/uploads`
+// Handler for `/`
 // Handler for login
 pub async fn handler() -> Result<Html<String>, (StatusCode, Html<String>)> {
     // Get .env variables
@@ -53,7 +53,7 @@ pub async fn handler() -> Result<Html<String>, (StatusCode, Html<String>)> {
         template.render().map(Html).map_err(|_| {
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                error::render_error("/uploads", "Error rendering template"),
+                error::render_error("/", "Error rendering template"),
             )
         })
     }
@@ -65,7 +65,7 @@ pub async fn login_form(Form(form): Form<LoginForm>) -> Result<Html<String>, (St
         return render_upload_template();
     }
 
-    Err((StatusCode::UNAUTHORIZED, error::render_error("/uploads", "Unauthorized")))
+    Err((StatusCode::UNAUTHORIZED, error::render_error("/", "Unauthorized")))
 }
 
 // Render upload template
@@ -100,7 +100,7 @@ fn render_upload_template() -> Result<Html<String>, (StatusCode, Html<String>)> 
     template.render().map(Html).map_err(|_| {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
-            error::render_error("/uploads", "Error rendering template"),
+            error::render_error("/", "Error rendering template"),
         )
     })
 }

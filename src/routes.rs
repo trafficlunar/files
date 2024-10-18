@@ -4,7 +4,6 @@ use axum::{
     error_handling::HandleErrorLayer,
     extract::DefaultBodyLimit,
     http::StatusCode,
-    response::Redirect,
     routing::{delete, get, post, put},
     Router,
 };
@@ -55,22 +54,14 @@ pub async fn app() -> Router {
     Router::new()
         .route(
             "/",
-            get(|| async { Redirect::permanent("https://github.com/axolotlmaid/files/") }),
+            get(files::directory::handler).post(files::directory::login_form),
         )
+        .route("/:filename", get(files::preview::handler))
+        .route("/:filename/raw", get(files::raw::handler))
+        .route("/:filename/info", get(files::info::handler))
         .route_service("/favicon.ico", ServeFile::new("favicon.ico"))
         .route_service("/style.css", ServeFile::new("style.css"))
         .nest("/api", api_router)
-        .nest(
-            "/uploads",
-            Router::new()
-                .route(
-                    "/",
-                    get(files::directory::handler).post(files::directory::login_form),
-                )
-                .route("/:filename", get(files::preview::handler))
-                .route("/:filename/raw", get(files::raw::handler))
-                .route("/:filename/info", get(files::info::handler)),
-        )
         .fallback(notfound::handler)
         .route_layer(axum::middleware::from_fn(metrics::track_metrics))
         .layer(

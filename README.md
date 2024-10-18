@@ -31,8 +31,8 @@ The code for my Rust-powered file server at https://files.axolotlmaid.com - cust
 ## demo
 See it in usage at these links:
 
-- https://files.axolotlmaid.com/uploads/preview.rs
-- https://files.axolotlmaid.com/uploads/bliss.png
+- https://files.axolotlmaid.com/preview.rs
+- https://files.axolotlmaid.com/bliss.png
 
 You can also view the gallery by going [here](https://github.com/axolotlmaid/files/tree/master/images).
 
@@ -75,15 +75,15 @@ To rename a file, do the same request as deleting but instead to the route `/api
 ```
 
 ### view all uploads (directory)
-To view all the uploads (also known as the directory), go to `/uploads` and enter the optional password. You can also delete and rename files and also upload on this page.
+To view all the uploads (also known as the directory), go to `/` and enter the optional password. You can also delete and rename files and also upload on this page.
 
 There is also an option to do this in JSON form, to do this, create a GET request to `/api/uploads` which will return every file uploaded in a JSON string array. The `Authorization` header may be required if `PROTECT_DIRECTORY` is enabled in .env.
 
 ### previewing files
-There is two ways to view a specific file - you can either go to the URL with all the fancy styling which is `/uploads/file_name_here` or go to the same URL but with `/raw` and only the file itself at the end like `/uploads/file_name_here/raw`
+There is two ways to view a specific file - you can either go to the URL with all the fancy styling which is `/file_name_here` or go to the same URL but with `/raw` and only the file itself at the end like `/file_name_here/raw`
 
 ### viewing information of a file
-To view information of a file (name, size, modified time, url), create a GET request to `/uploads/filename/info` like you would do above but with `/info` as the suffix. This does not require authorization.
+To view information of a file (name, size, modified time, url), create a GET request to `/file_name_here/info` like you would do above but with `/info` as the suffix. This does not require authorization.
 
 ## installing
 ### docker (recommended)

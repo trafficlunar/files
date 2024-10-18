@@ -9,12 +9,12 @@
         <meta name="theme-color" content="#ffa6c1" />
 
         <meta property="og:title" content="{{ file }} — {{ page_title }}" />
-        <meta property="og:image" content="/uploads/{{ file }}/raw" />
+        <meta property="og:image" content="/{{ file }}/raw" />
         <meta property="og:image:type" content="{{ mime_type }}" />
 
         <meta name="twitter:title" content="{{ file }} — {{ page_title }}" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="/uploads/{{ file }}/raw" />
+        <meta name="twitter:image" content="/{{ file }}/raw" />
         <meta name="twitter:image:alt" content="{{ file }}" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -118,7 +118,7 @@
                         id="raw"
                         class="tooltip"
                         data-tooltip="View Raw File"
-                        href="/uploads/{{ file }}/raw"
+                        href="/{{ file }}/raw"
                     >
                         <span class="material-symbols-outlined"
                             >description</span
@@ -128,7 +128,7 @@
                         id="download"
                         class="tooltip"
                         data-tooltip="Download"
-                        href="/uploads/{{ file }}/raw"
+                        href="/{{ file }}/raw"
                         download="{{ file }}"
                     >
                         <span class="material-symbols-outlined">download</span>
@@ -184,7 +184,7 @@
                 centerImage();
                 draw();
             });
-            image.src = "/uploads/{{ file }}/raw";
+            image.src = "/{{ file }}/raw";
 
             function draw() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);

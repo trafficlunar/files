@@ -7,9 +7,6 @@ use chrono::{DateTime, Local, Utc};
 #[path = "../error.rs"]
 mod error;
 
-// CAUTION
-// DEADLY CODE AHEAD
-
 #[derive(Template)]
 #[template(path = "previews/file.html")]
 struct PreviewFileTemplate<'a> {
@@ -67,7 +64,7 @@ pub async fn handler(
 
     // Get file path, url, and metadata
     let file_path = PathBuf::from("uploads").join(&filename);
-    let formatted_url = format!("/uploads/{}", &filename);
+    let formatted_url = format!("/{}", &filename);
     let metadata = fs::metadata(&file_path).map_err(|_| {
         (
             StatusCode::NOT_FOUND,
