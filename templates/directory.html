@@ -83,6 +83,22 @@
                     user-select: none;
                 }
 
+                #loading-container {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+
+                    display: none;
+                    justify-content: center;
+                    align-items: center;
+
+                    backdrop-filter: blur(8px);
+                }
+
+                #loading-container svg {
+                    height: 4rem;
+                }
+
                 #file-upload-input {
                     position: absolute;
                     width: 100%;
@@ -247,6 +263,10 @@
                         <span id="drag-drop-title">upload</span>
                         <span id="drag-drop-info">drag or select a file</span>
                     </div>
+
+                    <div id="loading-container">
+                        <svg fill="#ffa6c1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" type="rotate" dur="0.75s" values="0 12 12;360 12 12" repeatCount="indefinite"/></path></svg>
+                    </div>
                 </div>
 
                 <div class="buttons" style="gap: 4px;">
@@ -298,6 +318,7 @@
                 const dragDropUploadDiv = document.getElementById("drag-drop-upload");
                 const dragDropTitle = document.getElementById("drag-drop-title");
                 const fileUploadInput = document.getElementById("file-upload-input");
+                const loadingContainer = document.getElementById("loading-container");
 
                 const uploadedFilesDiv = document.getElementById("files-uploaded");
                 const placeholder = document.getElementById("files-uploaded-placeholder");
@@ -310,6 +331,8 @@
                 //#region buttons
                 uploadButton.addEventListener("click", () => {
                     if (formData.values.length >= 0) {
+                        loadingContainer.style.display = "flex";
+
                         fetch("/api/upload", {
                             method: "POST",
                             headers: {
