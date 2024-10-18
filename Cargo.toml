@@ -9,7 +9,7 @@ axum = { version = "0.7.5", features = ["multipart"] }
 chrono = "0.4.38"
 dotenv = "0.15.0"
 metrics = "0.23.0"
-metrics-exporter-prometheus = "0.15.3"
+metrics-exporter-prometheus = "0.16.0"
 mime_guess = "2.0.5"
 rand = "0.8.5"
 serde = { version = "1.0.210", features = ["derive"] }
