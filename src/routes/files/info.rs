@@ -9,7 +9,7 @@ pub async fn handler(
     Path(filename): Path<String>,
 ) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
     // Get .env variables
-    let base_url = std::env::var("BASE_URL").expect("BASE_URL must be set.");
+    let base_url = std::env::var("BASE_URL").expect("BASE_URL must be set");
 
     // Get file path and metadata
     let file_path = PathBuf::from("uploads").join(&filename);

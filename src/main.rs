@@ -15,7 +15,7 @@ mod routes;
 async fn start_main_server() {
     let app = NormalizePathLayer::trim_trailing_slash().layer(routes::app().await);
 
-    let port = std::env::var("PORT").expect("PORT must be set.");
+    let port = std::env::var("PORT").expect("PORT must be set");
     let listener = TcpListener::bind("0.0.0.0:".to_owned() + port.as_str())
         .await
         .unwrap();
@@ -31,7 +31,7 @@ async fn start_main_server() {
 async fn start_metrics_server() {
     let app = NormalizePathLayer::trim_trailing_slash().layer(metrics::app().await);
 
-    let port = std::env::var("METRICS_PORT").expect("METRICS_PORT must be set.");
+    let port = std::env::var("METRICS_PORT").expect("METRICS_PORT must be set");
     let listener = TcpListener::bind("0.0.0.0:".to_owned() + port.as_str())
         .await
         .unwrap();

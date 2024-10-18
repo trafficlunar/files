@@ -8,7 +8,7 @@ use tokio::fs;
 // Handler for `/api/upload`
 pub async fn handler(mut multipart: Multipart) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
     // Get .env variables
-    let base_url = std::env::var("BASE_URL").expect("BASE_URL must be set.");
+    let base_url = std::env::var("BASE_URL").expect("BASE_URL must be set");
     let generate_filename = std::env::var("GENERATE_FILENAME")
         .unwrap_or_else(|_| "false".to_string())
         .parse::<bool>()

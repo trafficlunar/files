@@ -11,7 +11,7 @@ pub static PASSWORD: OnceLock<String> = OnceLock::new();
 pub fn get_password() -> &'static str {
     PASSWORD
         .get()
-        .expect("password has not been initalized!")
+        .expect("password has not been initalized")
         .as_str()
 }
 
