@@ -208,6 +208,11 @@ header {
     transition: 200ms opacity;
 }
 
+.hljs-ln-n {
+    color: #45475a;
+    margin-right: 12px;
+}
+
 .video-js .vjs-control-bar,
 .video-js .vjs-big-play-button {
     background-color: #1e1e2eb3 !important;
