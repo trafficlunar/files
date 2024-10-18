@@ -34,7 +34,7 @@ See it in usage at these links:
 - https://files.axolotlmaid.com/preview.rs
 - https://files.axolotlmaid.com/bliss.png
 
-You can also view the gallery by going [here](https://github.com/axolotlmaid/files/tree/master/images).
+You can also view the gallery by going [here](https://github.com/trafficlunar/files/tree/master/images).
 
 ## how to use
 ### uploading
@@ -89,7 +89,7 @@ To view information of a file (name, size, modified time, url), create a GET req
 ### docker (recommended)
 1. Clone the repository
 ```bash
-git clone https://github.com/axolotlmaid/files
+git clone https://github.com/trafficlunar/files
 cd files
 ```
 
@@ -103,7 +103,7 @@ docker build -t files .
 4. Run the Docker image
 
 > [!NOTE]
-> Read [.env.example](https://github.com/axolotlmaid/files/blob/master/.env.example) for more information on these variables.
+> Read [.env.example](https://github.com/trafficlunar/files/blob/master/.env.example) for more information on these variables.
 
 ```bash
 docker run -d \
@@ -128,7 +128,7 @@ docker run -d \
 ### manually
 1. Clone the repository
 ```bash
-git clone https://github.com/axolotlmaid/files
+git clone https://github.com/trafficlunar/files
 cd files
 ```
 

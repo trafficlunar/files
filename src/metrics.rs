@@ -20,7 +20,7 @@ pub async fn app() -> Router {
 }
 
 async fn handler_root() -> impl IntoResponse {
-    "https://github.com/axolotlmaid/files - metrics server"
+    "https://github.com/trafficlunar/files - metrics server"
 }
 
 // Metrics handlers

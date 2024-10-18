@@ -54,7 +54,7 @@ async fn main() {
  |_| |_|_|\___||___/
 
 ───────────────────────────────────────────────────────────
-github: https://github.com/axolotlmaid/files
+github: https://github.com/trafficlunar/files
 ───────────────────────────────────────────────────────────"#;
     println!("{}", startup_text);
 
