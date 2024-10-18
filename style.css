@@ -52,9 +52,20 @@ label {
 }
 
 input {
-    background-color: #1e1e2e;
+    background-color: transparent;
     color: #ffa6c1;
+    outline: none;
+    border: none;
+    width: 100%;
+}
 
+.input {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    background-color: #1e1e2e;
     outline: none;
     border: 1px solid #ffa6c180;
     border-radius: 4px;

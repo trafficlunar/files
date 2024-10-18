@@ -203,7 +203,7 @@
                 <span id="modal-file-name">frieren.png</span>
 
                 <label for="new-name">New file name</label>
-                <input type="text" name="new-name" placeholder="type the file name here...">
+                <input class="input" type="text" name="new-name" placeholder="type the file name here...">
 
                 <div class="buttons">
                     <button id="ok-button" class="button">ok</button>
@@ -241,7 +241,7 @@
                     </div>
 
                     <div id="drag-drop-upload">
-                        <input type="file" name="file-upload-input" id="file-upload-input" multiple>
+                        <input class="input" type="file" name="file-upload-input" id="file-upload-input" multiple>
 
                         <span class="material-symbols-outlined" style="font-size: 4rem;">upload</span>
                         <span id="drag-drop-title">upload</span>
@@ -257,7 +257,7 @@
                 <hr>
             {% endif %}
 
-            <input id="search-bar" type="text" placeholder="search..." />
+            <input class="input" id="search-bar" type="text" placeholder="search..." />
 
             {% for file in files %}
                 <div class="file">
